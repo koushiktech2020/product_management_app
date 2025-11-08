@@ -6,6 +6,7 @@ A modern React-based product management application built with TypeScript and Vi
 
 - User authentication (Login/Register pages) with form validation
 - Product listing and management
+- API integration with backend for authentication and product management
 - Data fetching with TanStack React Query
 - Responsive design with Bootstrap 5
 - Modern React 19 with TypeScript
@@ -26,6 +27,7 @@ A modern React-based product management application built with TypeScript and Vi
 - **Validation**: Yup (schema validation)
 - **HTTP Client**: Axios
 - **Data Fetching**: TanStack React Query
+- **API**: RESTful API with cookie-based JWT authentication
 - **Linting**: ESLint
 
 ## Getting Started
@@ -83,6 +85,8 @@ src/
 ├── routes.tsx           # Centralized route configuration (React Router v7)
 ├── main.tsx             # Application entry point
 ├── index.css            # Global styles and custom CSS
+├── services/
+│   └── api.ts           # API service functions for auth and products
 ├── components/
 │   ├── Navbar.tsx       # Navigation component
 │   └── Layout.tsx       # Layout component (wraps pages with Navbar)
@@ -97,12 +101,30 @@ src/
 └── assets/              # Static assets
 ```
 
-## Routing
+## API Integration
 
-- All routes are defined in `src/routes.tsx` using React Router v7's `RouteObject` type.
-- Routes are configured as individual top-level routes, each wrapped with the Layout component for consistent navigation.
-- Navigation between pages uses `Link` from React Router DOM instead of anchor tags for client-side routing.
-- App.tsx imports and uses these routes for clean and maintainable structure.
+The application integrates with a backend API at `http://localhost:5000/api` for authentication and product management.
+
+### Authentication Routes (/auth/\*)
+
+- `POST /auth/register` - Register a new user
+- `POST /auth/login` - Login user
+- `POST /auth/logout` - Logout from current device
+- `POST /auth/logout-all` - Logout from all devices
+- `GET /auth/profile` - Get user profile (requires auth)
+- `PUT /auth/profile` - Update user profile (requires auth)
+- `PUT /auth/change-password` - Change password (requires auth)
+
+### Product Routes (/products/\*) - All require authentication
+
+- `POST /products` - Create a new product
+- `GET /products` - Get all products (with optional query params: page, limit, search, category, sortBy, sortOrder)
+- `GET /products/stats` - Get product statistics
+- `GET /products/:id` - Get single product by ID
+- `PUT /products/:id` - Update product by ID
+- `DELETE /products/:id` - Delete product by ID
+
+All product routes require JWT authentication via cookie. Use `POST /auth/login` to authenticate.
 
 ## Contributing
 
