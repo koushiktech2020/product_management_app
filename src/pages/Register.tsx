@@ -30,7 +30,8 @@ const Register: React.FC = () => {
       await authAPI.register(data);
       localStorage.setItem("isAuthenticated", "true");
       navigate("/products");
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error("Registration error:", (err as Error).message);
       setError("Registration failed. Please try again.");
     } finally {
       setIsLoading(false);

@@ -27,7 +27,8 @@ const Login: React.FC = () => {
       await authAPI.login(values);
       localStorage.setItem("isAuthenticated", "true");
       navigate("/products");
-    } catch (err) {
+    } catch (err: unknown) {
+      console.error("Login error:", (err as Error).message);
       setError("Login failed. Please try again.");
     } finally {
       setIsLoading(false);
