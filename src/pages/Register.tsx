@@ -26,7 +26,11 @@ const Register: React.FC = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const { confirmPassword, ...data } = values;
+      const data = {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      };
       await authAPI.register(data);
       localStorage.setItem("isAuthenticated", "true");
       navigate("/products");
