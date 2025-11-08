@@ -1,38 +1,34 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { authAPI } from "../services/api";
 import {
   loginValidationSchema,
   type LoginFormValues,
 } from "../utils/validation";
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
+
+  const mutation = useMutation({
+    mutationFn: authAPI.login,
+    onSuccess: () => {
+      navigate("/products");
+    },
+  });
+
   const initialValues: LoginFormValues = {
     email: "",
     password: "",
   };
 
-  const handleSubmit = async (
+  const handleSubmit = (
     values: LoginFormValues,
-    {
-      setSubmitting,
-      setStatus,
-    }: {
-      setSubmitting: (isSubmitting: boolean) => void;
-      setStatus: (status: string) => void;
-    }
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
-    try {
-      console.log("Login attempt:", values);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert("Login successful!");
-    } catch (error) {
-      console.error("Login error:", error);
-      setStatus("Login failed. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    mutation.mutate(values);
+    setSubmitting(false);
   };
 
   return (
@@ -47,11 +43,11 @@ const Login: React.FC = () => {
                 validationSchema={loginValidationSchema}
                 onSubmit={handleSubmit}
               >
-                {({ isSubmitting, status }) => (
+                {() => (
                   <Form>
-                    {status && (
+                    {mutation.error && (
                       <div className="alert alert-danger" role="alert">
-                        {status}
+                        Login failed. Please try again.
                       </div>
                     )}
                     <div className="mb-3">
@@ -90,9 +86,9 @@ const Login: React.FC = () => {
                       <button
                         type="submit"
                         className="btn btn-primary"
-                        disabled={isSubmitting}
+                        disabled={mutation.isPending}
                       >
-                        {isSubmitting ? (
+                        {mutation.isPending ? (
                           <>
                             <span
                               className="spinner-border spinner-border-sm me-2"

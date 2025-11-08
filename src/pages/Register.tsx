@@ -1,12 +1,23 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { authAPI } from "../services/api";
 import {
   registerValidationSchema,
   type RegisterFormValues,
 } from "../utils/validation";
 
 const Register: React.FC = () => {
+  const navigate = useNavigate();
+
+  const mutation = useMutation({
+    mutationFn: authAPI.register,
+    onSuccess: () => {
+      navigate("/products");
+    },
+  });
+
   const initialValues: RegisterFormValues = {
     name: "",
     email: "",
@@ -14,27 +25,13 @@ const Register: React.FC = () => {
     confirmPassword: "",
   };
 
-  const handleSubmit = async (
+  const handleSubmit = (
     values: RegisterFormValues,
-    {
-      setSubmitting,
-      setStatus,
-    }: {
-      setSubmitting: (isSubmitting: boolean) => void;
-      setStatus: (status: string) => void;
-    }
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
-    try {
-      console.log("Registration attempt:", values);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert("Registration successful!");
-    } catch (error) {
-      console.error("Registration error:", error);
-      setStatus("Registration failed. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    const { confirmPassword, ...data } = values;
+    mutation.mutate(data);
+    setSubmitting(false);
   };
 
   return (
@@ -49,11 +46,11 @@ const Register: React.FC = () => {
                 validationSchema={registerValidationSchema}
                 onSubmit={handleSubmit}
               >
-                {({ isSubmitting, status }) => (
+                {() => (
                   <Form>
-                    {status && (
+                    {mutation.error && (
                       <div className="alert alert-danger" role="alert">
-                        {status}
+                        Registration failed. Please try again.
                       </div>
                     )}
                     <div className="mb-3">
@@ -124,9 +121,9 @@ const Register: React.FC = () => {
                       <button
                         type="submit"
                         className="btn btn-success"
-                        disabled={isSubmitting}
+                        disabled={mutation.isPending}
                       >
-                        {isSubmitting ? (
+                        {mutation.isPending ? (
                           <>
                             <span
                               className="spinner-border spinner-border-sm me-2"

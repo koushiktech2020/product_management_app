@@ -6,6 +6,7 @@ A modern React-based product management application built with TypeScript and Vi
 
 - User authentication (Login/Register pages) with form validation
 - Product listing and management
+- Protected routes with authentication checks
 - API integration with backend for authentication and product management
 - Data fetching with TanStack React Query
 - Responsive design with Bootstrap 5
@@ -88,8 +89,10 @@ src/
 ├── services/
 │   └── api.ts           # API service functions for auth and products
 ├── components/
-│   ├── Navbar.tsx       # Navigation component
-│   └── Layout.tsx       # Layout component (wraps pages with Navbar)
+│   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
+│   ├── PrivateRoute.tsx # Component for protecting authenticated routes
+│   ├── PublicRoute.tsx  # Component for public routes with auth redirect
+│   └── Navbar.tsx       # Navigation component
 ├── pages/
 │   ├── Login.tsx        # User login page with Formik & Yup validation
 │   ├── Register.tsx     # User registration page with Formik & Yup validation
