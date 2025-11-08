@@ -1,41 +1,26 @@
+import React from "react";
 import type { RouteObject } from "react-router-dom";
 import Layout from "./components/Layout";
-import ProductList from "./pages/ProductList";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ProductList from "./pages/ProductList";
+
+const layoutElement = (children: React.ReactNode) => (
+  <Layout>{children}</Layout>
+);
 
 const routes: RouteObject[] = [
   {
     path: "/",
-    element: (
-      <Layout>
-        <ProductList />
-      </Layout>
-    ),
-  },
-  {
-    path: "/login",
-    element: (
-      <Layout>
-        <Login />
-      </Layout>
-    ),
+    element: layoutElement(<Login />),
   },
   {
     path: "/register",
-    element: (
-      <Layout>
-        <Register />
-      </Layout>
-    ),
+    element: layoutElement(<Register />),
   },
   {
     path: "/products",
-    element: (
-      <Layout>
-        <ProductList />
-      </Layout>
-    ),
+    element: layoutElement(<ProductList />),
   },
 ];
 
