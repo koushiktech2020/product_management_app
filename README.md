@@ -5,6 +5,7 @@ A modern React-based product management application built with TypeScript and Vi
 ## Features
 
 - User authentication (Login/Register pages) with form validation
+- User logout functionality with API integration
 - Product listing and management
 - Protected routes with authentication checks
 - API integration with backend for authentication and product management

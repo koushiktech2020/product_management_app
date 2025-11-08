@@ -1,11 +1,36 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { authAPI } from "../services/api";
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ["profile"],
+    queryFn: authAPI.getProfile,
+    retry: false,
+  });
+
+  const logoutMutation = useMutation({
+    mutationFn: authAPI.logout,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      navigate("/");
+    },
+  });
+
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
+
+  const isAuthenticated = !isLoading && profile && !logoutMutation.isPending;
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container">
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to={isAuthenticated ? "/products" : "/"}>
           Product Manager
         </Link>
         <button
@@ -21,21 +46,37 @@ const Navbar: React.FC = () => {
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">
-                Login
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register">
-                Register
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/products">
-                Products
-              </Link>
-            </li>
+            {!isAuthenticated ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">
+                    Login
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/register">
+                    Register
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/products">
+                    Products
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-link nav-link"
+                    onClick={handleLogout}
+                    disabled={logoutMutation.isPending}
+                  >
+                    {logoutMutation.isPending ? "Logging out..." : "Logout"}
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
