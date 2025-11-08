@@ -4,18 +4,22 @@ A modern React-based product management application built with TypeScript and Vi
 
 ## Features
 
+- User authentication (Login/Register pages)
 - Product listing and management
+- Responsive design with Bootstrap 5
 - Modern React 19 with TypeScript
 - Fast development with Vite
-- Routing with React Router DOM
+- Client-side routing with React Router DOM
 - HTTP requests with Axios
 - ESLint for code quality
+- Custom CSS styling
 
 ## Tech Stack
 
 - **Frontend**: React 19, TypeScript
 - **Build Tool**: Vite
 - **Routing**: React Router DOM
+- **Styling**: Bootstrap 5, Custom CSS
 - **HTTP Client**: Axios
 - **Linting**: ESLint
 
@@ -49,6 +53,17 @@ A modern React-based product management application built with TypeScript and Vi
 
 4. Open your browser and navigate to `http://localhost:5173`
 
+## Pages
+
+- **Home (/)**: Product listing page (default route)
+- **Login (/login)**: User authentication page
+- **Register (/register)**: User registration page
+- **Products (/products)**: Product management page
+
+## Navigation
+
+The application includes a responsive navigation bar that allows easy navigation between all pages.
+
 ## Available Scripts
 
 - `npm run dev` - Start the development server
@@ -60,10 +75,16 @@ A modern React-based product management application built with TypeScript and Vi
 
 ```
 src/
-├── App.tsx          # Main application component
-├── main.tsx         # Application entry point
-├── index.css        # Global styles
-└── assets/          # Static assets
+├── App.tsx              # Main application component with routing
+├── main.tsx             # Application entry point
+├── index.css            # Global styles and custom CSS
+├── components/
+│   └── Navbar.tsx       # Navigation component
+├── pages/
+│   ├── Login.tsx        # User login page
+│   ├── Register.tsx     # User registration page
+│   └── ProductList.tsx  # Product listing page
+└── assets/              # Static assets
 ```
 
 ## Contributing
