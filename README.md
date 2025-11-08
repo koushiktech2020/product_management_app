@@ -58,10 +58,9 @@ A modern React-based product management application built with TypeScript and Vi
 
 ## Pages
 
-- **Home (/)**: Product listing page (default route)
-- **Login (/login)**: User authentication page
+- **Home (/)**: User login page (default route)
 - **Register (/register)**: User registration page
-- **Products (/products)**: Product management page
+- **Products (/products)**: Product listing and management page
 
 ## Navigation
 
@@ -99,8 +98,8 @@ src/
 ## Routing
 
 - All routes are defined in `src/routes.tsx` using React Router v7's `RouteObject` type.
+- Routes are configured as individual top-level routes, each wrapped with the Layout component for consistent navigation.
 - App.tsx imports and uses these routes for clean and maintainable structure.
-- Layout component is used to wrap all pages with a common Navbar.
 
 ## Contributing
 
