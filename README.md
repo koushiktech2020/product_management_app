@@ -87,8 +87,10 @@ src/
 ├── routes.tsx           # Centralized route configuration (React Router v7)
 ├── main.tsx             # Application entry point
 ├── index.css            # Global styles and custom CSS
+├── hooks/
+│   └── useAuth.ts          # Custom hook for authentication state
 ├── services/
-│   └── api.ts           # API service functions for auth and products
+│   └── api.ts              # API service functions for auth and products
 ├── components/
 │   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
 │   ├── Loading.tsx      # Reusable loading spinner component

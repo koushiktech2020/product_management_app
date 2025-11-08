@@ -1,19 +1,14 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { authAPI } from "../services/api";
 import Loading from "./Loading";
+import { useAuth } from "../hooks/useAuth";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
-  const { isLoading, error } = useQuery({
-    queryKey: ["profile"],
-    queryFn: authAPI.getProfile,
-    retry: false,
-  });
+  const { isLoading, error } = useAuth();
 
   if (isLoading) {
     return <Loading />;
