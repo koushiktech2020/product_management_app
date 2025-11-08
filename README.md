@@ -4,12 +4,13 @@ A modern React-based product management application built with TypeScript and Vi
 
 ## Features
 
-- User authentication (Login/Register pages)
+- User authentication (Login/Register pages) with form validation
 - Product listing and management
 - Responsive design with Bootstrap 5
 - Modern React 19 with TypeScript
 - Fast development with Vite
 - Client-side routing with React Router DOM
+- Form validation utilities
 - HTTP requests with Axios
 - ESLint for code quality
 - Custom CSS styling
@@ -81,9 +82,13 @@ src/
 ├── components/
 │   └── Navbar.tsx       # Navigation component
 ├── pages/
-│   ├── Login.tsx        # User login page
-│   ├── Register.tsx     # User registration page
+│   ├── Login.tsx        # User login page with validation
+│   ├── Register.tsx     # User registration page with validation
 │   └── ProductList.tsx  # Product listing page
+├── types/
+│   └── auth.ts          # Authentication related TypeScript types
+├── utils/
+│   └── validation.ts    # Form validation utilities
 └── assets/              # Static assets
 ```
 
