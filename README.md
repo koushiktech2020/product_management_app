@@ -6,6 +6,7 @@ A modern React-based product management application built with TypeScript and Vi
 
 - User authentication (Login/Register pages) with form validation
 - Product listing and management
+- Data fetching with TanStack React Query
 - Responsive design with Bootstrap 5
 - Modern React 19 with TypeScript
 - Fast development with Vite
@@ -20,10 +21,11 @@ A modern React-based product management application built with TypeScript and Vi
 - **Frontend**: React 19, TypeScript
 - **Build Tool**: Vite
 - **Routing**: React Router DOM
-- **Styling**: Bootstrap 5, Custom CSS
+- **Styling**: Bootstrap 5 (via CDN), Custom CSS
 - **Forms**: Formik (form handling)
 - **Validation**: Yup (schema validation)
 - **HTTP Client**: Axios
+- **Data Fetching**: TanStack React Query
 - **Linting**: ESLint
 
 ## Getting Started
