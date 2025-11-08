@@ -90,6 +90,7 @@ src/
 │   └── api.ts           # API service functions for auth and products
 ├── components/
 │   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
+│   ├── Loading.tsx      # Reusable loading spinner component
 │   ├── PrivateRoute.tsx # Component for protecting authenticated routes
 │   ├── PublicRoute.tsx  # Component for public routes with auth redirect
 │   └── Navbar.tsx       # Navigation component

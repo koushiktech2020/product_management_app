@@ -2,6 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { authAPI } from "../services/api";
+import Loading from "./Loading";
 
 interface PublicRouteProps {
   children: React.ReactNode;
@@ -15,13 +16,7 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
   });
 
   if (isLoading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!error && data) {
