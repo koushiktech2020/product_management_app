@@ -1,0 +1,43 @@
+// API-related TypeScript types
+
+// Auth types
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface ProfileUpdateData {
+  name?: string;
+  email?: string;
+}
+
+export interface ChangePasswordData {
+  oldPassword: string;
+  newPassword: string;
+}
+
+// Product types
+export interface ProductData {
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  stock: number;
+}
+
+export interface ProductQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  category?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export type ProductUpdateData = Partial<ProductData>;

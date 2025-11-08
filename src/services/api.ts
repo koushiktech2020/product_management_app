@@ -1,4 +1,13 @@
 import axios from 'axios';
+import type {
+  RegisterData,
+  LoginData,
+  ProfileUpdateData,
+  ChangePasswordData,
+  ProductData,
+  ProductQueryParams,
+  ProductUpdateData,
+} from '../types/api';
 
 const API_BASE = 'http://localhost:5000/api';
 
@@ -10,11 +19,9 @@ const api = axios.create({
 
 // Auth API functions
 export const authAPI = {
-  register: (data: { name: string; email: string; password: string }) =>
-    api.post('/auth/register', data),
+  register: (data: RegisterData) => api.post('/auth/register', data),
 
-  login: (data: { email: string; password: string }) =>
-    api.post('/auth/login', data),
+  login: (data: LoginData) => api.post('/auth/login', data),
 
   logout: () => api.post('/auth/logout'),
 
@@ -22,43 +29,22 @@ export const authAPI = {
 
   getProfile: () => api.get('/auth/profile'),
 
-  updateProfile: (data: { name?: string; email?: string }) =>
-    api.put('/auth/profile', data),
+  updateProfile: (data: ProfileUpdateData) => api.put('/auth/profile', data),
 
-  changePassword: (data: { oldPassword: string; newPassword: string }) =>
-    api.put('/auth/change-password', data),
+  changePassword: (data: ChangePasswordData) => api.put('/auth/change-password', data),
 };
 
 // Product API functions (all require authentication)
 export const productsAPI = {
-  create: (data: {
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    stock: number;
-  }) => api.post('/products', data),
+  create: (data: ProductData) => api.post('/products', data),
 
-  getAll: (params?: {
-    page?: number;
-    limit?: number;
-    search?: string;
-    category?: string;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
-  }) => api.get('/products', { params }),
+  getAll: (params?: ProductQueryParams) => api.get('/products', { params }),
 
   getStats: () => api.get('/products/stats'),
 
   getById: (id: string) => api.get(`/products/${id}`),
 
-  update: (id: string, data: Partial<{
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    stock: number;
-  }>) => api.put(`/products/${id}`, data),
+  update: (id: string, data: ProductUpdateData) => api.put(`/products/${id}`, data),
 
   delete: (id: string) => api.delete(`/products/${id}`),
 };

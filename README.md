@@ -95,7 +95,8 @@ src/
 │   ├── Register.tsx     # User registration page with Formik & Yup validation
 │   └── ProductList.tsx  # Product listing page
 ├── types/
-│   └── auth.ts          # Authentication related TypeScript types
+│   ├── api.ts          # API request/response TypeScript types
+│   └── auth.ts         # Authentication related TypeScript types
 ├── utils/
 │   └── validation.ts    # Yup validation schemas for forms
 └── assets/              # Static assets
