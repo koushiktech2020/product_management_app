@@ -21,6 +21,8 @@ A modern React-based product management application built with TypeScript and Vi
 - **Build Tool**: Vite
 - **Routing**: React Router DOM
 - **Styling**: Bootstrap 5, Custom CSS
+- **Forms**: Formik (form handling)
+- **Validation**: Yup (schema validation)
 - **HTTP Client**: Axios
 - **Linting**: ESLint
 
@@ -88,7 +90,7 @@ src/
 ├── types/
 │   └── auth.ts          # Authentication related TypeScript types
 ├── utils/
-│   └── validation.ts    # Form validation utilities
+│   └── validation.ts    # Yup validation schemas for forms
 └── assets/              # Static assets
 ```
 

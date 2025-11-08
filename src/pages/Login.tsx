@@ -1,52 +1,36 @@
-import React, { useState } from "react";
-import type { LoginFormData } from "../types/auth";
-import { validateLoginForm, hasFormErrors } from "../utils/validation";
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import {
+  loginValidationSchema,
+  type LoginFormValues,
+} from "../utils/validation";
 
 const Login: React.FC = () => {
-  const [formData, setFormData] = useState<LoginFormData>({
+  const initialValues: LoginFormValues = {
     email: "",
     password: "",
-  });
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: "",
-      });
-    }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const validationErrors = validateLoginForm(formData);
-    if (hasFormErrors(validationErrors)) {
-      setErrors(validationErrors);
-      setIsSubmitting(false);
-      return;
+  const handleSubmit = async (
+    values: LoginFormValues,
+    {
+      setSubmitting,
+      setStatus,
+    }: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      setStatus: (status: string) => void;
     }
-
+  ) => {
     try {
-      // Handle login logic here
-      console.log("Login attempt:", formData);
+      console.log("Login attempt:", values);
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       alert("Login successful!");
     } catch (error) {
       console.error("Login error:", error);
-      setErrors({ general: "Login failed. Please try again." });
+      setStatus("Login failed. Please try again.");
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
@@ -57,71 +41,73 @@ const Login: React.FC = () => {
           <div className="card shadow">
             <div className="card-body">
               <h2 className="card-title text-center mb-4">Login</h2>
-              {errors.general && (
-                <div className="alert alert-danger" role="alert">
-                  {errors.general}
-                </div>
-              )}
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
-                    Email address
-                  </label>
-                  <input
-                    type="email"
-                    className={`form-control ${
-                      errors.email ? "is-invalid" : ""
-                    }`}
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.email && (
-                    <div className="invalid-feedback">{errors.email}</div>
-                  )}
-                </div>
-                <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    className={`form-control ${
-                      errors.password ? "is-invalid" : ""
-                    }`}
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                  {errors.password && (
-                    <div className="invalid-feedback">{errors.password}</div>
-                  )}
-                </div>
-                <div className="d-grid">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Logging in...
-                      </>
-                    ) : (
-                      "Login"
+              <Formik
+                initialValues={initialValues}
+                validationSchema={loginValidationSchema}
+                onSubmit={handleSubmit}
+              >
+                {({ isSubmitting, status }) => (
+                  <Form>
+                    {status && (
+                      <div className="alert alert-danger" role="alert">
+                        {status}
+                      </div>
                     )}
-                  </button>
-                </div>
-              </form>
+                    <div className="mb-3">
+                      <label htmlFor="email" className="form-label">
+                        Email address
+                      </label>
+                      <Field
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        name="email"
+                      />
+                      <ErrorMessage
+                        name="email"
+                        component="div"
+                        className="invalid-feedback d-block"
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="password" className="form-label">
+                        Password
+                      </label>
+                      <Field
+                        type="password"
+                        className="form-control"
+                        id="password"
+                        name="password"
+                      />
+                      <ErrorMessage
+                        name="password"
+                        component="div"
+                        className="invalid-feedback d-block"
+                      />
+                    </div>
+                    <div className="d-grid">
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <span
+                              className="spinner-border spinner-border-sm me-2"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            Logging in...
+                          </>
+                        ) : (
+                          "Login"
+                        )}
+                      </button>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
               <div className="text-center mt-3">
                 <a href="/register" className="text-decoration-none">
                   Don't have an account? Register
