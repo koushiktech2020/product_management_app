@@ -9,7 +9,6 @@ A modern React-based product management application built with TypeScript and Vi
 - Product listing and management
 - Protected routes with authentication checks
 - API integration with backend for authentication and product management
-- Data fetching with TanStack React Query
 - Responsive design with Bootstrap 5
 - Modern React 19 with TypeScript
 - Fast development with Vite
@@ -28,7 +27,6 @@ A modern React-based product management application built with TypeScript and Vi
 - **Forms**: Formik (form handling)
 - **Validation**: Yup (schema validation)
 - **HTTP Client**: Axios
-- **Data Fetching**: TanStack React Query
 - **API**: RESTful API with cookie-based JWT authentication
 - **Linting**: ESLint
 
@@ -87,8 +85,6 @@ src/
 ├── routes.tsx           # Centralized route configuration (React Router v7)
 ├── main.tsx             # Application entry point
 ├── index.css            # Global styles and custom CSS
-├── hooks/
-│   └── useAuth.ts          # Custom hook for authentication state
 ├── services/
 │   └── api.ts              # API service functions for auth and products
 ├── components/

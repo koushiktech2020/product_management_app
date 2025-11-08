@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { authAPI } from "../services/api";
 import {
@@ -10,13 +9,8 @@ import {
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-
-  const mutation = useMutation({
-    mutationFn: authAPI.register,
-    onSuccess: () => {
-      navigate("/products");
-    },
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const initialValues: RegisterFormValues = {
     name: "",
@@ -25,13 +19,23 @@ const Register: React.FC = () => {
     confirmPassword: "",
   };
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values: RegisterFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
-    const { confirmPassword, ...data } = values;
-    mutation.mutate(data);
-    setSubmitting(false);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const { confirmPassword, ...data } = values;
+      await authAPI.register(data);
+      localStorage.setItem("isAuthenticated", "true");
+      navigate("/products");
+    } catch (err) {
+      setError("Registration failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -48,9 +52,9 @@ const Register: React.FC = () => {
               >
                 {() => (
                   <Form>
-                    {mutation.error && (
+                    {error && (
                       <div className="alert alert-danger" role="alert">
-                        Registration failed. Please try again.
+                        {error}
                       </div>
                     )}
                     <div className="mb-3">
@@ -121,9 +125,9 @@ const Register: React.FC = () => {
                       <button
                         type="submit"
                         className="btn btn-success"
-                        disabled={mutation.isPending}
+                        disabled={isLoading}
                       >
-                        {mutation.isPending ? (
+                        {isLoading ? (
                           <>
                             <span
                               className="spinner-border spinner-border-sm me-2"

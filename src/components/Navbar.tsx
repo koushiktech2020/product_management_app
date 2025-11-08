@@ -1,27 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authAPI } from "../services/api";
-import { useAuth } from "../hooks/useAuth";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const { data: profile, isLoading } = useAuth();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const logoutMutation = useMutation({
-    mutationFn: authAPI.logout,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
+  useEffect(() => {
+    const auth = localStorage.getItem("isAuthenticated") === "true";
+    setIsAuthenticated(auth);
+  }, []);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await authAPI.logout();
+      localStorage.removeItem("isAuthenticated");
+      setIsAuthenticated(false);
       navigate("/");
-    },
-  });
-
-  const handleLogout = () => {
-    logoutMutation.mutate();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
-
-  const isAuthenticated = !isLoading && profile && !logoutMutation.isPending;
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -66,9 +69,9 @@ const Navbar: React.FC = () => {
                   <button
                     className="btn btn-link nav-link"
                     onClick={handleLogout}
-                    disabled={logoutMutation.isPending}
+                    disabled={isLoggingOut}
                   >
-                    {logoutMutation.isPending ? "Logging out..." : "Logout"}
+                    {isLoggingOut ? "Logging out..." : "Logout"}
                   </button>
                 </li>
               </>
