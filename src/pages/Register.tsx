@@ -133,14 +133,15 @@ const Register: React.FC = () => {
                         disabled={isLoading}
                       >
                         {isLoading ? (
-                          <>
+                          <div className="d-flex align-items-center justify-content-center">
                             <span
                               className="spinner-border me-2"
                               role="status"
                               aria-hidden="true"
+                              style={{ width: "1.5rem", height: "1.5rem" }}
                             ></span>
                             Registering...
-                          </>
+                          </div>
                         ) : (
                           "Register"
                         )}
