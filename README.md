@@ -101,6 +101,7 @@ src/
 
 - All routes are defined in `src/routes.tsx` using React Router v7's `RouteObject` type.
 - Routes are configured as individual top-level routes, each wrapped with the Layout component for consistent navigation.
+- Navigation between pages uses `Link` from React Router DOM instead of anchor tags for client-side routing.
 - App.tsx imports and uses these routes for clean and maintainable structure.
 
 ## Contributing

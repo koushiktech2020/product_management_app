@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import {
   registerValidationSchema,
@@ -143,9 +144,9 @@ const Register: React.FC = () => {
                 )}
               </Formik>
               <div className="text-center mt-3">
-                <a href="/login" className="text-decoration-none">
+                <Link to="/" className="text-decoration-none">
                   Already have an account? Login
-                </a>
+                </Link>
               </div>
             </div>
           </div>
