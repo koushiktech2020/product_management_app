@@ -6,7 +6,7 @@ interface PublicRouteProps {
 }
 
 const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+  const isAuthenticated = !!localStorage.getItem("userId");
 
   if (isAuthenticated) {
     return <Navigate to="/products" replace />;

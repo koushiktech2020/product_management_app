@@ -8,7 +8,7 @@ const Navbar: React.FC = () => {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
-    const auth = localStorage.getItem("isAuthenticated") === "true";
+    const auth = !!localStorage.getItem("userId");
     setIsAuthenticated(auth);
   }, []);
 
@@ -16,7 +16,7 @@ const Navbar: React.FC = () => {
     setIsLoggingOut(true);
     try {
       await authAPI.logout();
-      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("userId");
       setIsAuthenticated(false);
       navigate("/");
     } catch (error) {

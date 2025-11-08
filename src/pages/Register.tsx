@@ -31,8 +31,8 @@ const Register: React.FC = () => {
         email: values.email,
         password: values.password,
       };
-      await authAPI.register(data);
-      localStorage.setItem("isAuthenticated", "true");
+      const response = await authAPI.register(data);
+      localStorage.setItem("userId", response.data._id);
       navigate("/products");
     } catch (err: unknown) {
       console.error("Registration error:", (err as Error).message);

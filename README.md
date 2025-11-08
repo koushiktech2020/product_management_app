@@ -4,17 +4,17 @@ A modern React-based product management application built with TypeScript and Vi
 
 ## Features
 
-- User authentication (Login/Register pages) with form validation
+- **Enhanced User Authentication**: Login/Register with secure API integration using user ID from server responses
 - User logout functionality with API integration
 - Product listing and management
-- Protected routes with authentication checks
+- Protected routes with robust authentication checks
 - API integration with backend for authentication and product management
 - Responsive design with Bootstrap 5
 - Modern React 19 with TypeScript
 - Fast development with Vite
 - Client-side routing with React Router DOM
 - Form validation utilities
-- HTTP requests with Axios
+- HTTP requests with Axios (direct implementation for optimal performance)
 - ESLint for code quality
 - Custom CSS styling
 
@@ -26,7 +26,7 @@ A modern React-based product management application built with TypeScript and Vi
 - **Styling**: Bootstrap 5 (via CDN), Custom CSS
 - **Forms**: Formik (form handling)
 - **Validation**: Yup (schema validation)
-- **HTTP Client**: Axios
+- **HTTP Client**: Axios (direct implementation for optimal performance)
 - **API**: RESTful API with cookie-based JWT authentication
 - **Linting**: ESLint
 
@@ -129,6 +129,25 @@ The application integrates with a backend API at `http://localhost:5000/api` for
 - `DELETE /products/:id` - Delete product by ID
 
 All product routes require JWT authentication via cookie. Use `POST /auth/login` to authenticate.
+
+## Authentication System
+
+The application uses a robust authentication system with the following features:
+
+- **Secure State Management**: Uses user ID from API responses instead of boolean flags for more secure authentication state
+- **Cookie-Based JWT**: Server-side JWT authentication with HTTP-only cookies
+- **Client-Side Storage**: User ID stored in localStorage for client-side auth checks
+- **Route Protection**: PrivateRoute and PublicRoute components for conditional rendering
+- **Auto-Redirect**: Authenticated users redirected from login/register pages, unauthenticated users redirected from protected pages
+- **Logout Functionality**: API-based logout with localStorage cleanup
+
+### Authentication Flow
+
+1. User registers/logs in via API
+2. Server returns user data including unique `_id`
+3. Client stores `userId` in localStorage
+4. Route protection checks for `userId` presence
+5. Logout removes `userId` and calls API logout endpoint
 
 ## Contributing
 
