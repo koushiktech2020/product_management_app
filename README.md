@@ -78,14 +78,16 @@ The application includes a responsive navigation bar that allows easy navigation
 
 ```
 src/
-├── App.tsx              # Main application component with routing
+├── App.tsx              # Main application component (uses routes from routes.tsx)
+├── routes.tsx           # Centralized route configuration (React Router v7)
 ├── main.tsx             # Application entry point
 ├── index.css            # Global styles and custom CSS
 ├── components/
-│   └── Navbar.tsx       # Navigation component
+│   ├── Navbar.tsx       # Navigation component
+│   └── Layout.tsx       # Layout component (wraps pages with Navbar)
 ├── pages/
-│   ├── Login.tsx        # User login page with validation
-│   ├── Register.tsx     # User registration page with validation
+│   ├── Login.tsx        # User login page with Formik & Yup validation
+│   ├── Register.tsx     # User registration page with Formik & Yup validation
 │   └── ProductList.tsx  # Product listing page
 ├── types/
 │   └── auth.ts          # Authentication related TypeScript types
@@ -93,6 +95,12 @@ src/
 │   └── validation.ts    # Yup validation schemas for forms
 └── assets/              # Static assets
 ```
+
+## Routing
+
+- All routes are defined in `src/routes.tsx` using React Router v7's `RouteObject` type.
+- App.tsx imports and uses these routes for clean and maintainable structure.
+- Layout component is used to wrap all pages with a common Navbar.
 
 ## Contributing
 
