@@ -94,6 +94,8 @@ src/
 │       ├── index.ts    # Endpoint exports
 │       ├── auth.ts     # Authentication endpoint constants
 │       └── products.ts # Product endpoint constants
+├── utils/
+│   └── urlBuilder.ts   # Shared URL building utility with query parameter support
 ├── components/
 │   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
 │   ├── Loading.tsx      # Reusable loading spinner component
