@@ -98,6 +98,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       }
 
       if (result.success) {
+        resetHandler();
         // Close the offcanvas
         const offcanvas = document.getElementById("productFormOffcanvas");
         if (offcanvas) {
