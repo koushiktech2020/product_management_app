@@ -147,14 +147,16 @@ const ProductList: React.FC = () => {
                   </small>
                   <div className="d-flex gap-2 mt-2">
                     <button
-                      className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 rounded-pill fw-medium transition-all"
+                      className="btn btn-outline-primary d-flex align-items-center gap-1 rounded-pill fw-medium transition-all"
                       data-bs-toggle="offcanvas"
                       data-bs-target="#productFormOffcanvas"
                       aria-controls="productFormOffcanvas"
                       onClick={() => handleEditProduct(product)}
                       style={{
-                        border: "1px solid #007bff",
-                        boxShadow: "0 2px 8px rgba(0, 123, 255, 0.15)",
+                        background:
+                          "linear-gradient(135deg, #007bff 0%, #0056b3 100%)",
+                        border: "none",
+                        boxShadow: "0 4px 15px rgba(0, 123, 255, 0.3)",
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.backgroundColor = "#007bff";
@@ -180,7 +182,7 @@ const ProductList: React.FC = () => {
                       Edit
                     </button>
                     <button
-                      className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 rounded-pill fw-medium transition-all"
+                      className="btn btn-outline-danger d-flex align-items-center gap-1 rounded-pill fw-medium transition-all"
                       onClick={() => handleDeleteProduct(product)}
                       style={{
                         border: "1px solid #dc3545",
