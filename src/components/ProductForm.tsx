@@ -79,7 +79,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
   return (
     <div
-      className={`offcanvas offcanvas-end offcanvas-xxl ${
+      className={`offcanvas offcanvas-end offcanvas-xxl bg-light ${
         isOpen ? "show" : ""
       }`}
       data-bs-scroll="true"
