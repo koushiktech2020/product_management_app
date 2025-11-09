@@ -41,11 +41,11 @@ const NotFound: React.FC = () => {
             {/* Additional Help */}
             <div className="card border-0 shadow-sm">
               <div className="card-body">
-                <h6 className="card-title text-muted mb-2">
+                <h4 className="card-title text-muted mb-2">
                   <i className="bi bi-lightbulb me-2"></i>
                   What you can do:
-                </h6>
-                <ul className="list-unstyled text-start mb-0">
+                </h4>
+                <ul className="list-unstyled text-center mb-0">
                   <li className="mb-2">
                     <i className="bi bi-check-circle text-success me-2"></i>
                     Go back to the homepage
