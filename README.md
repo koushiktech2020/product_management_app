@@ -86,7 +86,11 @@ src/
 ├── main.tsx             # Application entry point
 ├── index.css            # Global styles and custom CSS
 ├── services/
-│   └── api.ts              # API service functions for auth and products
+│   ├── index.ts        # Main services barrel export
+│   ├── http.ts         # Axios configuration with interceptors
+│   ├── api.ts          # Backward compatibility exports
+│   ├── auth.ts         # Authentication API functions
+│   └── products.ts     # Product management API functions
 ├── components/
 │   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
 │   ├── Loading.tsx      # Reusable loading spinner component
@@ -148,6 +152,42 @@ The application uses a robust authentication system with the following features:
 3. Client stores `userId` in localStorage
 4. Route protection checks for `userId` presence
 5. Logout removes `userId` and calls API logout endpoint
+
+## Services Architecture
+
+The application uses a modular services architecture for better maintainability and scalability:
+
+### HTTP Layer (`services/http.ts`)
+
+- **Axios Configuration**: Centralized axios instance with base URL and credentials
+- **Request Interceptors**: For adding headers or modifying requests
+- **Response Interceptors**: For handling common errors like 401 unauthorized
+- **Error Handling**: Automatic logout on authentication failures
+
+### Authentication Service (`services/auth.ts`)
+
+- **User Registration**: `register()` - Create new user accounts
+- **User Login**: `login()` - Authenticate users and return session
+- **User Logout**: `logout()` / `logoutAll()` - End user sessions
+- **Profile Management**: `getProfile()`, `updateProfile()`, `changePassword()`
+
+### Products Service (`services/products.ts`)
+
+- **CRUD Operations**: Create, read, update, delete products
+- **Product Queries**: `getAll()` with filtering and pagination support
+- **Statistics**: `getStats()` for product analytics
+- **Individual Products**: `getById()`, `update()`, `delete()` by product ID
+
+### Service Imports
+
+```typescript
+// Clean imports
+import { authAPI } from "@/services/auth";
+import { productsAPI } from "@/services/products";
+
+// Or use the barrel export
+import { authAPI, productsAPI } from "@/services";
+```
 
 ## Contributing
 
