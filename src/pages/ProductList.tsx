@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { productsAPI } from "../services/api";
+import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
 import type { Product } from "../types/api";
 import ProductForm from "../components/ProductForm";
 import ProductFilter from "../components/ProductFilter";
@@ -43,7 +44,9 @@ const ProductList: React.FC = () => {
   const handleDeleteProduct = async (product: Product) => {
     if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
       try {
-        const result = await productsAPI.delete(product._id);
+        const result = await productsAPI.delete(
+          PRODUCTS_ENDPOINTS.BY_ID(product._id)
+        );
         if (result.success) {
           // Refresh the products list after successful deletion with current filters
           fetchProducts(currentFilters || undefined);
@@ -92,7 +95,10 @@ const ProductList: React.FC = () => {
   const fetchProducts = async (filters?: ProductFilters) => {
     try {
       setLoading(true);
-      const result = await productsAPI.getAll(filters || undefined);
+      const result = await productsAPI.getAll(
+        PRODUCTS_ENDPOINTS.BASE,
+        filters || undefined
+      );
 
       if (result.success && result.data) {
         const { data } = result.data;

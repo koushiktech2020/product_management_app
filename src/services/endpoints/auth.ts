@@ -1,14 +1,12 @@
-// Authentication API endpoints with query parameter support
-import { buildUrl } from '../../utils/urlBuilder';
-
+// Authentication API endpoints
 export const AUTH_ENDPOINTS = {
-  REGISTER: (params?: Record<string, unknown>) => buildUrl('/auth/register', params),
-  LOGIN: (params?: Record<string, unknown>) => buildUrl('/auth/login', params),
-  LOGOUT: (params?: Record<string, unknown>) => buildUrl('/auth/logout', params),
-  LOGOUT_ALL: (params?: Record<string, unknown>) => buildUrl('/auth/logout-all', params),
-  PROFILE: (params?: Record<string, unknown>) => buildUrl('/auth/profile', params),
-  UPDATE_PROFILE: (params?: Record<string, unknown>) => buildUrl('/auth/profile', params),
-  CHANGE_PASSWORD: (params?: Record<string, unknown>) => buildUrl('/auth/change-password', params),
+  REGISTER: '/auth/register',
+  LOGIN: '/auth/login',
+  LOGOUT: '/auth/logout',
+  LOGOUT_ALL: '/auth/logout-all',
+  PROFILE: '/auth/profile',
+  UPDATE_PROFILE: '/auth/profile',
+  CHANGE_PASSWORD: '/auth/change-password',
 } as const;
 
 // Type for auth endpoints

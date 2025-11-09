@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { authAPI } from "../services/api";
+import { AUTH_ENDPOINTS } from "../services/endpoints/auth";
 import {
   loginValidationSchema,
   type LoginFormValues,
@@ -25,7 +26,7 @@ const Login: React.FC = () => {
     setError(null);
 
     try {
-      const result = await authAPI.login(values);
+      const result = await authAPI.login(AUTH_ENDPOINTS.LOGIN, values);
 
       if (result.success && result.data) {
         localStorage.setItem("userId", result.data._id);

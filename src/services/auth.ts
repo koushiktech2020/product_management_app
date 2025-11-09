@@ -5,31 +5,30 @@ import type {
   ProfileUpdateData,
   ChangePasswordData,
 } from '../types/api';
-import { AUTH_ENDPOINTS } from './endpoints';
 import { apiWrapper } from '../utils/apiWrapper';
 
 // Auth API functions with centralized error handling
 export const authAPI = {
-  register: (data: RegisterData, params?: Record<string, unknown>) =>
-    apiWrapper(() => http.post(AUTH_ENDPOINTS.REGISTER(params), data).then(res => res.data)),
+  register: (url: string, data: RegisterData) =>
+    apiWrapper(() => http.post(url, data).then(res => res.data)),
 
-  login: (data: LoginData, params?: Record<string, unknown>) =>
-    apiWrapper(() => http.post(AUTH_ENDPOINTS.LOGIN(params), data).then(res => res.data)),
+  login: (url: string, data: LoginData) =>
+    apiWrapper(() => http.post(url, data).then(res => res.data)),
 
-  logout: (params?: Record<string, unknown>) =>
-    apiWrapper(() => http.post(AUTH_ENDPOINTS.LOGOUT(params)).then(res => res.data)),
+  logout: (url: string) =>
+    apiWrapper(() => http.post(url).then(res => res.data)),
 
-  logoutAll: (params?: Record<string, unknown>) =>
-    apiWrapper(() => http.post(AUTH_ENDPOINTS.LOGOUT_ALL(params)).then(res => res.data)),
+  logoutAll: (url: string) =>
+    apiWrapper(() => http.post(url).then(res => res.data)),
 
-  getProfile: (params?: Record<string, unknown>) =>
-    apiWrapper(() => http.get(AUTH_ENDPOINTS.PROFILE(params)).then(res => res.data)),
+  getProfile: (url: string) =>
+    apiWrapper(() => http.get(url).then(res => res.data)),
 
-  updateProfile: (data: ProfileUpdateData, params?: Record<string, unknown>) =>
-    apiWrapper(() => http.put(AUTH_ENDPOINTS.UPDATE_PROFILE(params), data).then(res => res.data)),
+  updateProfile: (url: string, data: ProfileUpdateData) =>
+    apiWrapper(() => http.put(url, data).then(res => res.data)),
 
-  changePassword: (data: ChangePasswordData, params?: Record<string, unknown>) =>
-    apiWrapper(() => http.put(AUTH_ENDPOINTS.CHANGE_PASSWORD(params), data).then(res => res.data)),
+  changePassword: (url: string, data: ChangePasswordData) =>
+    apiWrapper(() => http.put(url, data).then(res => res.data)),
 };
 
 export default authAPI;

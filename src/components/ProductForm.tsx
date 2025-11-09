@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
 import { productsAPI } from "../services/api";
+import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
 import type { ProductData } from "../types/api";
 
 // Custom validation schema for the form fields
@@ -62,7 +63,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
     if (!productId) return; // Additional safety check
 
     try {
-      const result = await productsAPI.getById(productId);
+      const result = await productsAPI.getById(
+        PRODUCTS_ENDPOINTS.BY_ID(productId)
+      );
 
       if (result.success && result.data) {
         const { data: product } = result.data;
@@ -92,10 +95,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       let result;
       if (isEditing && productId) {
-        const { data } = await productsAPI.update(productId, productData);
+        const { data } = await productsAPI.update(
+          PRODUCTS_ENDPOINTS.BY_ID(productId),
+          productData
+        );
         result = data;
       } else {
-        const { data } = await productsAPI.create(productData);
+        const { data } = await productsAPI.create(
+          PRODUCTS_ENDPOINTS.BASE,
+          productData
+        );
         result = data;
       }
 

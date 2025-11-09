@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
+import { AUTH_ENDPOINTS } from "../services/endpoints/auth";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Navbar: React.FC = () => {
     setIsLoggingOut(true);
 
     try {
-      const result = await authAPI.logout();
+      const result = await authAPI.logout(AUTH_ENDPOINTS.LOGOUT);
 
       // Always clear local state regardless of API result
       localStorage.removeItem("userId");

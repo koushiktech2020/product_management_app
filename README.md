@@ -118,11 +118,9 @@ src/
 │   ├── api.ts          # API request/response TypeScript types including Product interface
 │   └── auth.ts         # Authentication related TypeScript types
 ├── utils/
-│   ├── urlBuilder.ts       # Shared URL building utility with query parameter support
 │   ├── apiErrorHandler.ts  # Centralized API error handling utility
 │   ├── apiWrapper.ts       # API wrapper for automatic error handling
 │   ├── validation.ts       # Yup validation schemas for forms (login, register, product)
-│   └── index.ts            # Utility exports
 └── assets/              # Static assets
 ```
 
@@ -311,16 +309,16 @@ The products endpoint supports comprehensive filtering:
 
 ```typescript
 interface ProductQueryParams {
-  page?: number;           // Pagination page number
-  limit?: number;          // Number of items per page
-  name?: string;           // Search by product name (partial match)
-  category?: string;       // Filter by product category
-  minPrice?: number;       // Minimum price filter
-  maxPrice?: number;       // Maximum price filter
-  minQuantity?: number;    // Minimum quantity filter
-  maxQuantity?: number;    // Maximum quantity filter
-  startDate?: string;      // Filter products created after this date (YYYY-MM-DD)
-  endDate?: string;        // Filter products created before this date (YYYY-MM-DD)
+  page?: number; // Pagination page number
+  limit?: number; // Number of items per page
+  name?: string; // Search by product name (partial match)
+  category?: string; // Filter by product category
+  minPrice?: number; // Minimum price filter
+  maxPrice?: number; // Maximum price filter
+  minQuantity?: number; // Minimum quantity filter
+  maxQuantity?: number; // Maximum quantity filter
+  startDate?: string; // Filter products created after this date (YYYY-MM-DD)
+  endDate?: string; // Filter products created before this date (YYYY-MM-DD)
 }
 ```
 
@@ -350,6 +348,7 @@ The application features a sophisticated product filtering system with real-time
 ### Filter Components
 
 #### ProductFilter Component
+
 - **Controlled Inputs**: All filter fields use React useState for real-time updates
 - **Offcanvas UI**: Beautiful slide-out filter panel with Bootstrap styling
 - **Multiple Filter Types**: Text search, category, price range, quantity range, date range
@@ -399,9 +398,9 @@ const handleRefresh = () => {
     startDate: "",
     endDate: "",
   };
-  setFilterValues(resetFilters);    // Reset all filter fields
-  setCurrentFilters(null);          // Clear applied filters
-  fetchProducts(undefined);         // Fetch all products
+  setFilterValues(resetFilters); // Reset all filter fields
+  setCurrentFilters(null); // Clear applied filters
+  fetchProducts(undefined); // Fetch all products
 };
 ```
 
@@ -664,7 +663,64 @@ const fetchWithRetry = async () => {
 };
 ```
 
-## Recent Updates
+## API Architecture Changes (v1.0.5)
+
+### Simplified Endpoint Management
+
+The application now uses a simplified endpoint management system without URL builders:
+
+#### Endpoint Structure
+
+```typescript
+// Authentication endpoints
+export const AUTH_ENDPOINTS = {
+  REGISTER: "/auth/register",
+  LOGIN: "/auth/login",
+  LOGOUT: "/auth/logout",
+  PROFILE: "/auth/profile",
+  // ... etc
+};
+
+// Product endpoints
+export const PRODUCTS_ENDPOINTS = {
+  BASE: "/products",
+  STATS: "/products/stats",
+  BY_ID: (id: string) => `/products/${id}`,
+};
+```
+
+#### Service Function Changes
+
+All service functions now take the URL as the first parameter:
+
+```typescript
+// Before (with URL builder)
+authAPI.login(data, params);
+
+// After (URL as first parameter)
+authAPI.login(AUTH_ENDPOINTS.LOGIN, data);
+```
+
+#### Component Usage
+
+Components now import endpoints directly and pass URLs to service functions:
+
+```typescript
+import { AUTH_ENDPOINTS } from "../services/endpoints/auth";
+import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
+
+// Usage in components
+const result = await authAPI.login(AUTH_ENDPOINTS.LOGIN, credentials);
+const products = await productsAPI.getAll(PRODUCTS_ENDPOINTS.BASE, filters);
+```
+
+### Benefits of New Architecture
+
+- **Simplified Logic**: No complex URL building functions
+- **Direct Control**: Components have full control over endpoint URLs
+- **Better Maintainability**: Clear separation between endpoint definitions and API calls
+- **Type Safety**: Full TypeScript support with proper parameter validation
+- **Flexibility**: Easy to modify or extend endpoint usage per component
 
 ### v1.0.4 - Advanced Filtering System & useState Controls
 
@@ -698,6 +754,15 @@ const fetchWithRetry = async () => {
 - **UI Polish**: Refined button styling and hover effects for improved visual feedback
 - **TypeScript Improvements**: Fixed null safety issues and improved type definitions
 - **Code Optimization**: Removed duplicate code and improved component efficiency
+
+### v1.0.5 - API Architecture Simplification
+
+- **Simplified Endpoints**: Removed URL builder utility and complex endpoint functions
+- **Direct URL Parameters**: Service functions now take URL as first parameter
+- **Component-Controlled URLs**: Components import endpoints directly and pass URLs to services
+- **Cleaner Architecture**: Eliminated unnecessary abstraction layers
+- **Better Type Safety**: Improved parameter validation and error handling
+- **Streamlined API Calls**: More direct and maintainable service function calls
 
 ## Contributing
 
