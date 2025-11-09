@@ -85,7 +85,7 @@ const ProductList: React.FC = () => {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>Product List</h1>
         <button className="btn btn-primary" onClick={handleAddProduct}>
-          <i className="bi bi-plus-circle me-2"></i>
+          <i className="material-icons me-2">add_circle</i>
           Add New Product
         </button>
       </div>
@@ -112,11 +112,21 @@ const ProductList: React.FC = () => {
                       className="btn btn-outline-primary btn-sm"
                       onClick={() => handleEditProduct(product)}
                     >
-                      <i className="bi bi-pencil me-1"></i>
+                      <i
+                        className="material-icons me-1"
+                        style={{ fontSize: "16px" }}
+                      >
+                        edit
+                      </i>
                       Edit
                     </button>
                     <button className="btn btn-outline-danger btn-sm">
-                      <i className="bi bi-trash me-1"></i>
+                      <i
+                        className="material-icons me-1"
+                        style={{ fontSize: "16px" }}
+                      >
+                        delete
+                      </i>
                       Delete
                     </button>
                   </div>
@@ -139,13 +149,6 @@ const ProductList: React.FC = () => {
         onSuccess={handleFormSuccess}
         product={editingProduct}
       />
-
-      {isFormOpen && (
-        <div
-          className="offcanvas-backdrop show"
-          onClick={handleFormClose}
-        ></div>
-      )}
     </div>
   );
 };
