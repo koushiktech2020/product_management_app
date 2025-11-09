@@ -7,9 +7,12 @@ A modern React-based product management application built with TypeScript and Vi
 - **Enhanced User Authentication**: Login/Register with secure API integration using user ID from server responses
 - User logout functionality with API integration
 - Product listing and management with beautiful offcanvas forms
+- **Complete CRUD Operations**: Create, Read, Update, Delete products with real-time UI updates
 - **Streamlined Component Architecture**: Clean prop-based communication between ProductList and ProductForm components
 - **Beautiful UI Components**: Enhanced buttons with hover effects, gradients, and modern styling
 - **Dynamic Form Headers**: Context-aware offcanvas headers with icons and appropriate titles
+- **Form Validation**: Comprehensive client-side validation with user-friendly error messages
+- **Quantity Management**: Track product inventory with quantity field
 - Protected routes with robust authentication checks
 - API integration with backend for authentication and product management
 - Responsive design with Bootstrap 5 and Google Material Icons
@@ -281,6 +284,35 @@ The application integrates with a backend API at `http://localhost:5000/api` for
 
 All product routes require JWT authentication via cookie. Use `POST /auth/login` to authenticate.
 
+## Product Data Structure
+
+Products contain the following fields:
+
+```typescript
+interface ProductData {
+  name: string; // Product name (required)
+  description: string; // Product description (required)
+  price: number; // Product price in rupees (required)
+  category: string; // Product category (required)
+  quantity: number; // Available quantity (required)
+}
+```
+
+### Complete Product Interface
+
+```typescript
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  quantity: number; // Inventory quantity
+  category: string;
+  createdAt: string;
+  updatedAt: string;
+}
+```
+
 ## Authentication System
 
 The application uses a robust authentication system with the following features:
@@ -494,6 +526,17 @@ const fetchWithRetry = async () => {
   }
 };
 ```
+
+## Recent Updates
+
+### v1.0.1 - Form Enhancements & Data Model Updates
+
+- **Quantity Field Standardization**: Updated data model from `stock` to `quantity` field across all components and API interfaces
+- **Enhanced Form Reset Functionality**: Added proper form reset handlers for better user experience after form submission
+- **Improved Form Validation**: Enhanced validation schemas with better error messaging
+- **UI Polish**: Refined button styling and hover effects for improved visual feedback
+- **TypeScript Improvements**: Fixed null safety issues and improved type definitions
+- **Code Optimization**: Removed duplicate code and improved component efficiency
 
 ## Contributing
 
