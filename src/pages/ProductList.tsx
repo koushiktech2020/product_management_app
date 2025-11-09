@@ -18,25 +18,41 @@ const ProductList: React.FC = () => {
     setProductId(null);
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const result = await productsAPI.getAll();
+  const fetchProducts = async () => {
+    try {
+      const result = await productsAPI.getAll();
 
-        if (result.success && result.data) {
-          const { data } = result.data;
-          setProducts(data);
-        }
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        setError("Failed to load products. Please try again.");
-      } finally {
-        setLoading(false);
+      if (result.success && result.data) {
+        const { data } = result.data;
+        setProducts(data);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setError("Failed to load products. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProducts();
   }, []);
+
+  // Reusable page header component
+  const PageHeader = () => (
+    <div className="d-flex justify-content-between align-items-center mb-4">
+      <h1>Product List</h1>
+      <button
+        className="btn btn-primary d-flex align-items-center gap-1"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#productFormOffcanvas"
+        aria-controls="productFormOffcanvas"
+      >
+        <i className="material-icons">add_circle</i>
+        Add New Product
+      </button>
+    </div>
+  );
 
   if (loading) {
     return <Loading text="Loading products..." />;
@@ -45,13 +61,11 @@ const ProductList: React.FC = () => {
   if (error) {
     return (
       <div className="container mt-5">
+        <PageHeader />
         <div className="alert alert-danger" role="alert">
           <h4 className="alert-heading">Error Loading Products</h4>
           <p>{error}</p>
-          <button
-            className="btn btn-outline-danger"
-            onClick={() => window.location.reload()}
-          >
+          <button className="btn btn-outline-danger" onClick={fetchProducts}>
             Try Again
           </button>
         </div>
@@ -61,18 +75,7 @@ const ProductList: React.FC = () => {
 
   return (
     <div className="container mt-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>Product List</h1>
-        <button
-          className="btn btn-primary d-flex align-items-center gap-1"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#productFormOffcanvas"
-          aria-controls="productFormOffcanvas"
-        >
-          <i className="material-icons">add_circle</i>
-          Add New Product
-        </button>
-      </div>
+      <PageHeader />
 
       <div className="row">
         {products.map((product) => (
