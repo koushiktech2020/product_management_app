@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
+import { useSafeAsync } from "../hooks/useSafeAsync";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { execute, loading } = useSafeAsync({
+    onError: (err) => {
+      console.error("Navbar logout error:", err);
+    },
+  });
 
   useEffect(() => {
     const auth = !!localStorage.getItem("userId");
@@ -13,20 +18,24 @@ const Navbar: React.FC = () => {
   }, []);
 
   const handleLogout = async () => {
-    setIsLoggingOut(true);
+    await execute(
+      async () => {
+        const result = await authAPI.logout();
 
-    const result = await authAPI.logout();
+        // Always clear local state regardless of API result
+        localStorage.removeItem("userId");
+        setIsAuthenticated(false);
+        navigate("/");
 
-    // Always clear local state regardless of API result
-    localStorage.removeItem("userId");
-    setIsAuthenticated(false);
-    navigate("/");
-
-    if (!result.success) {
-      console.error("Logout error:", result.error?.message);
-    }
-
-    setIsLoggingOut(false);
+        if (!result.success) {
+          throw new Error(result.error?.message || "Logout failed");
+        }
+      },
+      // Success callback
+      () => {
+        console.log("Logout successful");
+      }
+    );
   };
 
   return (
@@ -72,9 +81,9 @@ const Navbar: React.FC = () => {
                   <button
                     className="btn btn-link nav-link"
                     onClick={handleLogout}
-                    disabled={isLoggingOut}
+                    disabled={loading}
                   >
-                    {isLoggingOut ? "Logging out..." : "Logout"}
+                    {loading ? "Logging out..." : "Logout"}
                   </button>
                 </li>
               </>

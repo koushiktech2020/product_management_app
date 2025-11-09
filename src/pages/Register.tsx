@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { authAPI } from "../services/api";
+import { useSafeAsync } from "../hooks/useSafeAsync";
 import {
   registerValidationSchema,
   type RegisterFormValues,
@@ -9,8 +10,11 @@ import {
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { execute, loading, error, setError } = useSafeAsync({
+    onError: (err) => {
+      console.error("Register component error:", err);
+    },
+  });
 
   const initialValues: RegisterFormValues = {
     name: "",
@@ -23,7 +27,6 @@ const Register: React.FC = () => {
     values: RegisterFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
-    setIsLoading(true);
     setError(null);
 
     const data = {
@@ -32,18 +35,25 @@ const Register: React.FC = () => {
       password: values.password,
     };
 
-    const result = await authAPI.register(data);
+    await execute(
+      async () => {
+        const result = await authAPI.register(data);
 
-    if (result.success && result.data) {
-      localStorage.setItem("userId", result.data._id);
-      navigate("/products");
-    } else {
-      setError(
-        result.error?.message || "Registration failed. Please try again."
-      );
-    }
+        if (result.success && result.data) {
+          localStorage.setItem("userId", result.data._id);
+          navigate("/products");
+        } else {
+          throw new Error(
+            result.error?.message || "Registration failed. Please try again."
+          );
+        }
+      },
+      // Success callback
+      () => {
+        console.log("Registration successful");
+      }
+    );
 
-    setIsLoading(false);
     setSubmitting(false);
   };
 
@@ -134,9 +144,9 @@ const Register: React.FC = () => {
                       <button
                         type="submit"
                         className="btn btn-success"
-                        disabled={isLoading}
+                        disabled={loading}
                       >
-                        {isLoading ? (
+                        {loading ? (
                           <div className="d-flex align-items-center justify-content-center">
                             <span
                               className="spinner-border me-2"
