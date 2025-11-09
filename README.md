@@ -99,7 +99,8 @@ src/
 │   ├── Loading.tsx      # Reusable loading spinner component
 │   ├── PrivateRoute.tsx # Component for protecting authenticated routes
 │   ├── PublicRoute.tsx  # Component for public routes with auth redirect
-│   └── Navbar.tsx       # Navigation component
+│   ├── Navbar.tsx       # Navigation component
+│   └── ProductForm.tsx  # Offcanvas form component for adding/editing products
 ├── pages/
 │   ├── Login.tsx        # User login page with Formik & Yup validation
 │   ├── Register.tsx     # User registration page with Formik & Yup validation
@@ -111,7 +112,8 @@ src/
 │   ├── urlBuilder.ts       # Shared URL building utility with query parameter support
 │   ├── apiErrorHandler.ts  # Centralized API error handling utility
 │   ├── apiWrapper.ts       # API wrapper for automatic error handling
-│   └── validation.ts       # Yup validation schemas for forms
+│   ├── validation.ts       # Yup validation schemas for forms (login, register, product)
+│   └── index.ts            # Utility exports
 └── assets/              # Static assets
 ```
 
