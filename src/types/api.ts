@@ -80,4 +80,15 @@ export interface ProductQueryParams {
   endDate?: string;
 }
 
+export interface ProductFilters {
+  name?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minQuantity?: number;
+  maxQuantity?: number;
+  startDate?: string;
+  endDate?: string;
+}
+
 export type ProductUpdateData = Partial<ProductData>;

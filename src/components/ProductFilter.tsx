@@ -1,15 +1,5 @@
 import React from "react";
-
-interface ProductFilters {
-  name?: string;
-  category?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  minQuantity?: number;
-  maxQuantity?: number;
-  startDate?: string;
-  endDate?: string;
-}
+import type { ProductFilters } from "../types/api";
 
 interface ProductFilterProps {
   onFilter?: (filters: ProductFilters) => void;

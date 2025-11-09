@@ -1,22 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { productsAPI } from "../services/api";
 import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
-import type { Product } from "../types/api";
+import type { Product, ProductFilters } from "../types/api";
 import ProductForm from "../components/ProductForm";
 import ProductFilter from "../components/ProductFilter";
 import Loading from "../components/Loading";
 import EmptyState from "../components/EmptyState";
-
-interface ProductFilters {
-  name?: string;
-  category?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  minQuantity?: number;
-  maxQuantity?: number;
-  startDate?: string;
-  endDate?: string;
-}
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
