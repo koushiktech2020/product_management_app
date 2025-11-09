@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { handleApiError } from '../utils/apiErrorHandler';
 
 const API_BASE = 'http://localhost:5000/api';
 
@@ -25,13 +26,14 @@ http.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Handle common errors here
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
-      localStorage.removeItem('userId');
-      window.location.href = '/';
-    }
-    return Promise.reject(error);
+    // Use centralized error handler
+    const apiError = handleApiError(error, {
+      showToast: false, // Don't show toast in interceptor, let components handle it
+      logError: true,
+      redirectOnAuthError: true
+    });
+
+    return Promise.reject(apiError);
   }
 );
 

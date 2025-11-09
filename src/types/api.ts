@@ -22,6 +22,22 @@ export interface ChangePasswordData {
   newPassword: string;
 }
 
+// Auth response types
+export interface AuthResponse {
+  _id: string;
+  name: string;
+  email: string;
+  createdAt: string;
+}
+
+export interface LoginResponse extends AuthResponse {
+  token?: string; // If using token-based auth
+}
+
+export interface ProfileResponse extends AuthResponse {
+  updatedAt: string;
+}
+
 // Product types
 export interface ProductData {
   name: string;

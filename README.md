@@ -95,7 +95,8 @@ src/
 │       ├── auth.ts     # Authentication endpoint constants
 │       └── products.ts # Product endpoint constants
 ├── utils/
-│   └── urlBuilder.ts   # Shared URL building utility with query parameter support
+│   ├── urlBuilder.ts   # Shared URL building utility with query parameter support
+│   └── apiErrorHandler.ts # Centralized API error handling utility
 ├── components/
 │   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
 │   ├── Loading.tsx      # Reusable loading spinner component
@@ -226,6 +227,43 @@ productsAPI.getAll(
 
 // Custom endpoint with params (for testing)
 productsAPI.getById("123", { include: "reviews,images" });
+```
+
+## Error Handling System
+
+The application uses a centralized error handling system for consistent API error management:
+
+### Error Handler Utility (`utils/apiErrorHandler.ts`)
+
+- **Standardized Error Format**: All API errors converted to consistent `ApiError` interface
+- **Automatic Error Classification**: Network errors, auth errors, validation errors, etc.
+- **Smart Error Messages**: User-friendly messages based on HTTP status codes
+- **Authentication Handling**: Automatic logout and redirect on 401 errors
+- **Configurable Behavior**: Options for logging, toast notifications, redirects
+
+### Error Types Handled
+
+- **HTTP Errors**: 400, 401, 403, 404, 422, 429, 500+
+- **Network Errors**: Connection issues, timeouts
+- **JavaScript Errors**: Unexpected runtime errors
+- **Authentication Errors**: Automatic token cleanup and redirects
+
+### Usage in Components
+
+```typescript
+import { handleApiError } from "@/utils/apiErrorHandler";
+
+try {
+  const data = await authAPI.login(credentials);
+  // Handle success
+} catch (error) {
+  const apiError = handleApiError(error, {
+    showToast: true, // Show user notification
+    logError: true, // Log to console
+    redirectOnAuthError: true, // Redirect on 401
+  });
+  // Handle standardized error
+}
 ```
 
 ## Contributing
