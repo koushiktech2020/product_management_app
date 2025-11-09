@@ -4,77 +4,32 @@ import type {
   LoginData,
   ProfileUpdateData,
   ChangePasswordData,
-  AuthResponse,
-  LoginResponse,
-  ProfileResponse,
 } from '../types/api';
 import { AUTH_ENDPOINTS } from './endpoints';
-import { handleApiError } from '../utils/apiErrorHandler';
+import { apiWrapper } from '../utils/apiWrapper';
 
-// Auth API functions with flexible query parameter support and error handling
+// Auth API functions with centralized error handling
 export const authAPI = {
-  register: async (data: RegisterData, params?: Record<string, unknown>): Promise<AuthResponse> => {
-    try {
-      const response = await http.post(AUTH_ENDPOINTS.REGISTER(params), data);
-      return response.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
+  register: (data: RegisterData, params?: Record<string, unknown>) =>
+    apiWrapper(() => http.post(AUTH_ENDPOINTS.REGISTER(params), data).then(res => res.data)),
 
-  login: async (data: LoginData, params?: Record<string, unknown>): Promise<LoginResponse> => {
-    try {
-      const response = await http.post(AUTH_ENDPOINTS.LOGIN(params), data);
-      return response.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
+  login: (data: LoginData, params?: Record<string, unknown>) =>
+    apiWrapper(() => http.post(AUTH_ENDPOINTS.LOGIN(params), data).then(res => res.data)),
 
-  logout: async (params?: Record<string, unknown>): Promise<{ message: string }> => {
-    try {
-      const response = await http.post(AUTH_ENDPOINTS.LOGOUT(params));
-      return response.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
+  logout: (params?: Record<string, unknown>) =>
+    apiWrapper(() => http.post(AUTH_ENDPOINTS.LOGOUT(params)).then(res => res.data)),
 
-  logoutAll: async (params?: Record<string, unknown>): Promise<{ message: string }> => {
-    try {
-      const response = await http.post(AUTH_ENDPOINTS.LOGOUT_ALL(params));
-      return response.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
+  logoutAll: (params?: Record<string, unknown>) =>
+    apiWrapper(() => http.post(AUTH_ENDPOINTS.LOGOUT_ALL(params)).then(res => res.data)),
 
-  getProfile: async (params?: Record<string, unknown>): Promise<ProfileResponse> => {
-    try {
-      const response = await http.get(AUTH_ENDPOINTS.PROFILE(params));
-      return response.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
+  getProfile: (params?: Record<string, unknown>) =>
+    apiWrapper(() => http.get(AUTH_ENDPOINTS.PROFILE(params)).then(res => res.data)),
 
-  updateProfile: async (data: ProfileUpdateData, params?: Record<string, unknown>): Promise<ProfileResponse> => {
-    try {
-      const response = await http.put(AUTH_ENDPOINTS.UPDATE_PROFILE(params), data);
-      return response.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
+  updateProfile: (data: ProfileUpdateData, params?: Record<string, unknown>) =>
+    apiWrapper(() => http.put(AUTH_ENDPOINTS.UPDATE_PROFILE(params), data).then(res => res.data)),
 
-  changePassword: async (data: ChangePasswordData, params?: Record<string, unknown>): Promise<{ message: string }> => {
-    try {
-      const response = await http.put(AUTH_ENDPOINTS.CHANGE_PASSWORD(params), data);
-      return response.data;
-    } catch (error) {
-      throw handleApiError(error);
-    }
-  },
+  changePassword: (data: ChangePasswordData, params?: Record<string, unknown>) =>
+    apiWrapper(() => http.put(AUTH_ENDPOINTS.CHANGE_PASSWORD(params), data).then(res => res.data)),
 };
 
 export default authAPI;

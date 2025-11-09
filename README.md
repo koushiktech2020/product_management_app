@@ -95,8 +95,9 @@ src/
 │       ├── auth.ts     # Authentication endpoint constants
 │       └── products.ts # Product endpoint constants
 ├── utils/
-│   ├── urlBuilder.ts   # Shared URL building utility with query parameter support
-│   └── apiErrorHandler.ts # Centralized API error handling utility
+│   ├── urlBuilder.ts       # Shared URL building utility with query parameter support
+│   ├── apiErrorHandler.ts  # Centralized API error handling utility
+│   └── apiWrapper.ts       # API wrapper for automatic error handling
 ├── components/
 │   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
 │   ├── Loading.tsx      # Reusable loading spinner component
@@ -264,6 +265,94 @@ try {
   });
   // Handle standardized error
 }
+```
+
+## API Wrapper System
+
+The application uses an API wrapper system to eliminate repetitive try-catch blocks and provide consistent error handling:
+
+### API Wrapper Utility (`utils/apiWrapper.ts`)
+
+- **Automatic Error Handling**: No need to write try-catch in components
+- **Standardized Results**: `ApiResult<T>` interface with success/error states
+- **Loading States**: Built-in loading state management
+- **Batch Operations**: Execute multiple API calls with single error handling
+- **Retry Mechanism**: Automatic retry for failed requests
+
+### Usage in Components
+
+#### Basic Usage (No try-catch needed)
+
+```typescript
+import { authAPI } from "@/services/auth";
+
+const handleLogin = async (credentials) => {
+  const result = await authAPI.login(credentials);
+
+  if (result.success) {
+    // Handle success
+    console.log("User logged in:", result.data);
+    navigate("/products");
+  } else {
+    // Handle error (already processed by error handler)
+    console.error("Login failed:", result.error.message);
+  }
+};
+```
+
+#### With Loading States
+
+```typescript
+import { useApiCall } from "@/utils/apiWrapper";
+
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState(null);
+
+const handleRegister = async (userData) => {
+  const result = await useApiCall(() => authAPI.register(userData), {
+    setLoading,
+    setError,
+    showToast: true,
+  });
+
+  if (result.success) {
+    navigate("/login");
+  }
+};
+```
+
+#### Batch API Calls
+
+```typescript
+import { batchApiCalls } from "@/utils/apiWrapper";
+
+const loadDashboardData = async () => {
+  const [userResult, productsResult, statsResult] = await batchApiCalls([
+    () => authAPI.getProfile(),
+    () => productsAPI.getAll({ limit: 5 }),
+    () => productsAPI.getStats(),
+  ]);
+
+  // Handle results...
+};
+```
+
+#### Retry Mechanism
+
+```typescript
+import { retryApiCall } from "@/utils/apiWrapper";
+
+const fetchWithRetry = async () => {
+  const result = await retryApiCall(
+    () => productsAPI.getAll({ page: 1 }),
+    3, // max retries
+    1000 // delay between retries
+  );
+
+  if (result.success) {
+    setProducts(result.data);
+  }
+};
 ```
 
 ## Contributing
