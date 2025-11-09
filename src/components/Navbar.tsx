@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../services/api";
-import { useSafeAsync } from "../hooks/useSafeAsync";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { execute, loading } = useSafeAsync({
-    onError: (err) => {
-      console.error("Navbar logout error:", err);
-    },
-  });
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     const auth = !!localStorage.getItem("userId");
@@ -18,24 +13,24 @@ const Navbar: React.FC = () => {
   }, []);
 
   const handleLogout = async () => {
-    await execute(
-      async () => {
-        const result = await authAPI.logout();
+    setIsLoggingOut(true);
 
-        // Always clear local state regardless of API result
-        localStorage.removeItem("userId");
-        setIsAuthenticated(false);
-        navigate("/");
+    try {
+      const result = await authAPI.logout();
 
-        if (!result.success) {
-          throw new Error(result.error?.message || "Logout failed");
-        }
-      },
-      // Success callback
-      () => {
-        console.log("Logout successful");
+      // Always clear local state regardless of API result
+      localStorage.removeItem("userId");
+      setIsAuthenticated(false);
+      navigate("/");
+
+      if (!result.success) {
+        console.error("Logout error:", result.error?.message);
       }
-    );
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -81,9 +76,9 @@ const Navbar: React.FC = () => {
                   <button
                     className="btn btn-link nav-link"
                     onClick={handleLogout}
-                    disabled={loading}
+                    disabled={isLoggingOut}
                   >
-                    {loading ? "Logging out..." : "Logout"}
+                    {isLoggingOut ? "Logging out..." : "Logout"}
                   </button>
                 </li>
               </>

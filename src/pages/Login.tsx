@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { authAPI } from "../services/api";
-import { useSafeAsync } from "../hooks/useSafeAsync";
 import {
   loginValidationSchema,
   type LoginFormValues,
@@ -10,11 +9,8 @@ import {
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { execute, loading, error, setError } = useSafeAsync({
-    onError: (err) => {
-      console.error("Login component error:", err);
-    },
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const initialValues: LoginFormValues = {
     email: "",
@@ -25,28 +21,25 @@ const Login: React.FC = () => {
     values: LoginFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void }
   ) => {
-    setError(null); // Clear previous errors
+    setIsLoading(true);
+    setError(null);
 
-    await execute(
-      async () => {
-        const result = await authAPI.login(values);
+    try {
+      const result = await authAPI.login(values);
 
-        if (result.success && result.data) {
-          localStorage.setItem("userId", result.data._id);
-          navigate("/products");
-        } else {
-          throw new Error(
-            result.error?.message || "Login failed. Please try again."
-          );
-        }
-      },
-      // Success callback
-      () => {
-        console.log("Login successful");
+      if (result.success && result.data) {
+        localStorage.setItem("userId", result.data._id);
+        navigate("/products");
+      } else {
+        setError(result.error?.message || "Login failed. Please try again.");
       }
-    );
-
-    setSubmitting(false);
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -104,9 +97,9 @@ const Login: React.FC = () => {
                       <button
                         type="submit"
                         className="btn btn-primary"
-                        disabled={loading}
+                        disabled={isLoading}
                       >
-                        {loading ? (
+                        {isLoading ? (
                           <div className="d-flex align-items-center justify-content-center">
                             <span
                               className="spinner-border spinner-border-sm me-2"

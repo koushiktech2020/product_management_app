@@ -1,53 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { productsAPI } from "../services/api";
-import { useSafeAsync } from "../hooks/useSafeAsync";
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  createdBy: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-}
+import type { Product } from "../types/api";
 
 const ProductList: React.FC = () => {
-  const { execute, loading, error } = useSafeAsync({
-    onError: (err) => {
-      console.error("ProductList error:", err);
-    },
-  });
-
-  const [products, setProducts] = React.useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      await execute(
-        async () => {
-          const result = await productsAPI.getAll();
+      try {
+        const result = await productsAPI.getAll();
 
-          if (result.success && result.data) {
-            setProducts(result.data);
-          } else {
-            throw new Error(
-              result.error?.message || "Failed to fetch products"
-            );
-          }
-        },
-        // Success callback
-        () => {
-          console.log("Products fetched successfully");
+        if (result.success && result.data) {
+          const { data } = result.data;
+          setProducts(data);
         }
-      );
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchProducts();
-  }, [execute]);
+  }, []);
 
   if (loading) {
     return (

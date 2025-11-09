@@ -47,6 +47,20 @@ export interface ProductData {
   stock: number;
 }
 
+export interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  createdBy: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ProductQueryParams {
   page?: number;
   limit?: number;
