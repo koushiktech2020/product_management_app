@@ -6,6 +6,7 @@ import PublicRoute from "./components/PublicRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ProductList from "./pages/ProductList";
+import NotFound from "./pages/NotFound";
 
 const layoutElement = (children: React.ReactNode) => (
   <Layout>{children}</Layout>
@@ -23,6 +24,10 @@ const routes: RouteObject[] = [
   {
     path: "/products",
     element: <PrivateRoute>{layoutElement(<ProductList />)}</PrivateRoute>,
+  },
+  {
+    path: "*",
+    element: layoutElement(<NotFound />),
   },
 ];
 
