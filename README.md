@@ -205,17 +205,25 @@ The application uses a centralized endpoint management system for better maintai
 
 - **Centralized Management**: All endpoints in one place for easy updates
 - **Type Safety**: TypeScript types for endpoint validation
-- **Flexibility**: Service functions accept endpoint parameters for customization
+- **Query Parameter Flexibility**: Easy to add filters, search, pagination
+- **Future-Proof**: Built-in support for complex filtering scenarios
 - **Maintainability**: Easy to change API versions or base paths
 
-### Usage Example
+### Usage Examples
 
 ```typescript
-// Default usage (uses predefined endpoints)
+// Basic usage (no query params)
 authAPI.login(credentials);
+productsAPI.getAll();
 
-// Custom endpoint (for testing or different environments)
-authAPI.login(credentials, "/custom/auth/login");
+// With query parameters for filtering
+productsAPI.getAll(
+  { page: 1, limit: 10 }, // Standard query params
+  { name: "laptop", category: "electronics", price_min: 500 } // Additional filters
+);
+
+// Custom endpoint with params (for testing)
+productsAPI.getById("123", { include: "reviews,images" });
 ```
 
 ## Contributing
