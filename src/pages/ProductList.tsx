@@ -3,6 +3,7 @@ import { productsAPI } from "../services/api";
 import type { Product } from "../types/api";
 import ProductForm from "../components/ProductForm";
 import Loading from "../components/Loading";
+import EmptyState from "../components/EmptyState";
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -217,9 +218,24 @@ const ProductList: React.FC = () => {
       </div>
 
       {products.length === 0 && (
-        <div className="text-center mt-5">
-          <p className="text-muted">No products found.</p>
-        </div>
+        <EmptyState
+          title="No Products Found"
+          description="You haven't added any products yet. Start by creating your first product to get started."
+          icon="inventory_2"
+          actionButton={{
+            text: "Add Your First Product",
+            onClick: () => {
+              // Trigger the offcanvas to open
+              const button = document.querySelector(
+                '[data-bs-target="#productFormOffcanvas"]'
+              ) as HTMLButtonElement;
+              if (button) {
+                button.click();
+              }
+            },
+            variant: "primary",
+          }}
+        />
       )}
 
       <ProductForm
