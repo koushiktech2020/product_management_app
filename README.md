@@ -7,6 +7,7 @@ A modern React-based product management application built with TypeScript and Vi
 - **Enhanced User Authentication**: Login/Register with secure API integration using user ID from server responses
 - User logout functionality with API integration
 - Product listing and management with beautiful offcanvas forms
+- **Streamlined Component Architecture**: Clean prop-based communication between ProductList and ProductForm components
 - Protected routes with robust authentication checks
 - API integration with backend for authentication and product management
 - Responsive design with Bootstrap 5 and Google Material Icons
@@ -100,11 +101,12 @@ src/
 │   ├── PrivateRoute.tsx # Component for protecting authenticated routes
 │   ├── PublicRoute.tsx  # Component for public routes with auth redirect
 │   ├── Navbar.tsx       # Navigation component
-│   └── ProductForm.tsx  # Offcanvas form component for adding/editing products (uses Bootstrap classes)
+│   └── ProductForm.tsx  # Offcanvas form component for adding/editing products (streamlined props: productId, setProductId, afterClose)
 ├── pages/
 │   ├── Login.tsx        # User login page with Formik & Yup validation
 │   ├── Register.tsx     # User registration page with Formik & Yup validation
-│   └── ProductList.tsx  # Product listing page
+│   ├── ProductList.tsx  # Product listing page (refactored with clean state management)
+│   └── NotFound.tsx     # 404 error page with Material Icons
 ├── types/
 │   ├── api.ts          # API request/response TypeScript types including Product interface
 │   └── auth.ts         # Authentication related TypeScript types
@@ -115,6 +117,52 @@ src/
 │   ├── validation.ts       # Yup validation schemas for forms (login, register, product)
 │   └── index.ts            # Utility exports
 └── assets/              # Static assets
+```
+
+## Component Architecture
+
+The application features a clean, maintainable component architecture with streamlined prop interfaces:
+
+### ProductForm Component
+
+The ProductForm component uses a modern prop-based approach for better separation of concerns:
+
+```typescript
+interface ProductFormProps {
+  productId?: string | null; // ID of product to edit (null for new product)
+  setProductId?: (id: string | null) => void; // Function to update productId
+  afterClose?: () => void; // Callback after form closes
+}
+```
+
+### Benefits of Streamlined Architecture
+
+- **Simplified State Management**: ProductList manages only the productId, delegating form logic to ProductForm
+- **Clean Component Communication**: Props-based interface eliminates complex state synchronization
+- **Better Maintainability**: Clear separation of concerns between list and form components
+- **Reduced Coupling**: Components are more independent and easier to test
+- **Bootstrap Integration**: Form uses native Bootstrap offcanvas for better UX
+
+### Usage Example
+
+```tsx
+// ProductList component
+const [productId, setProductId] = useState<string | null>(null);
+
+const handleEditProduct = (product: Product) => {
+  setProductId(product._id); // Simple state update
+};
+
+const handleAfterClose = () => {
+  setProductId(null); // Clean reset
+};
+
+// Clean component usage
+<ProductForm
+  productId={productId}
+  setProductId={setProductId}
+  afterClose={handleAfterClose}
+/>;
 ```
 
 ## Styling & Icons

@@ -8,35 +8,14 @@ const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-  const handleAddProduct = () => {
-    setEditingProduct(null);
-    setIsFormOpen(true);
-  };
+  const [productId, setProductId] = useState<string | null>(null);
 
   const handleEditProduct = (product: Product) => {
-    setEditingProduct(product);
-    setIsFormOpen(true);
+    setProductId(product._id);
   };
 
-  const handleFormClose = () => {
-    setIsFormOpen(false);
-    setEditingProduct(null);
-  };
-
-  const handleFormSuccess = async () => {
-    // Refresh the products list
-    try {
-      const result = await productsAPI.getAll();
-      if (result.success && result.data) {
-        const { data } = result.data;
-        setProducts(data);
-      }
-    } catch (err) {
-      console.error("Error refreshing products:", err);
-    }
+  const handleAfterClose = () => {
+    setProductId(null);
   };
 
   useEffect(() => {
@@ -86,7 +65,9 @@ const ProductList: React.FC = () => {
         <h1>Product List</h1>
         <button
           className="btn btn-primary d-flex align-items-center gap-1"
-          onClick={handleAddProduct}
+          data-bs-toggle="offcanvas"
+          data-bs-target="#productFormOffcanvas"
+          aria-controls="productFormOffcanvas"
         >
           <i className="material-icons">add_circle</i>
           Add New Product
@@ -147,10 +128,9 @@ const ProductList: React.FC = () => {
       )}
 
       <ProductForm
-        isOpen={isFormOpen}
-        onClose={handleFormClose}
-        onSuccess={handleFormSuccess}
-        product={editingProduct}
+        productId={productId}
+        setProductId={setProductId}
+        afterClose={handleAfterClose}
       />
     </div>
   );
