@@ -92,9 +92,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       let result;
       if (isEditing && productId) {
-        result = await productsAPI.update(productId, productData);
+        const { data } = await productsAPI.update(productId, productData);
+        result = data;
       } else {
-        result = await productsAPI.create(productData);
+        const { data } = await productsAPI.create(productData);
+        result = data;
       }
 
       if (result.success) {
