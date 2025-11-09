@@ -86,9 +86,8 @@ src/
 ├── main.tsx             # Application entry point
 ├── index.css            # Global styles and custom CSS
 ├── services/
-│   ├── index.ts        # Main services barrel export
+│   ├── api.ts          # Backward compatibility exports (used by existing components)
 │   ├── http.ts         # Axios configuration with interceptors
-│   ├── api.ts          # Backward compatibility exports
 │   ├── auth.ts         # Authentication API functions
 │   └── products.ts     # Product management API functions
 ├── components/
