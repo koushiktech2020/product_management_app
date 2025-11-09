@@ -14,6 +14,27 @@ const ProductList: React.FC = () => {
     setProductId(product._id);
   };
 
+  const handleDeleteProduct = async (product: Product) => {
+    if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
+      try {
+        const result = await productsAPI.delete(product._id);
+        if (result.success) {
+          // Refresh the products list after successful deletion
+          const refreshResult = await productsAPI.getAll();
+          if (refreshResult.success && refreshResult.data) {
+            const { data } = refreshResult.data;
+            setProducts(data);
+          }
+        } else {
+          alert("Failed to delete product. Please try again.");
+        }
+      } catch (err) {
+        console.error("Error deleting product:", err);
+        alert("An error occurred while deleting the product.");
+      }
+    }
+  };
+
   const handleAfterClose = () => {
     setProductId(null);
   };
@@ -126,6 +147,9 @@ const ProductList: React.FC = () => {
                   <div className="d-flex gap-2 mt-2">
                     <button
                       className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 rounded-pill fw-medium transition-all"
+                      data-bs-toggle="offcanvas"
+                      data-bs-target="#productFormOffcanvas"
+                      aria-controls="productFormOffcanvas"
                       onClick={() => handleEditProduct(product)}
                       style={{
                         border: "1px solid #007bff",
@@ -156,6 +180,7 @@ const ProductList: React.FC = () => {
                     </button>
                     <button
                       className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 rounded-pill fw-medium transition-all"
+                      onClick={() => handleDeleteProduct(product)}
                       style={{
                         border: "1px solid #dc3545",
                         boxShadow: "0 2px 8px rgba(220, 53, 69, 0.15)",
