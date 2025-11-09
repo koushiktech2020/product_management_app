@@ -1,18 +1,19 @@
 # Product Management App
 
-A modern React-based product management application built with TypeScript and Vite.
+A modern React-based product management application built with TypeScript and Vite, featuring advanced filtering and real-time state management.
 
 ## Features
 
 - **Enhanced User Authentication**: Login/Register with secure API integration using user ID from server responses
 - User logout functionality with API integration
-- Product listing and management with beautiful offcanvas forms
+- **Advanced Product Filtering**: Real-time controlled filtering with useState management
 - **Complete CRUD Operations**: Create, Read, Update, Delete products with real-time UI updates
 - **Streamlined Component Architecture**: Clean prop-based communication between ProductList and ProductForm components
 - **Beautiful UI Components**: Enhanced buttons with hover effects, gradients, and modern styling
 - **Dynamic Form Headers**: Context-aware offcanvas headers with icons and appropriate titles
 - **Form Validation**: Comprehensive client-side validation with user-friendly error messages
 - **Quantity Management**: Track product inventory with quantity field
+- **Refresh Functionality**: Reset all filters and show all products with one click
 - Protected routes with robust authentication checks
 - API integration with backend for authentication and product management
 - Responsive design with Bootstrap 5 and Google Material Icons
@@ -106,7 +107,8 @@ src/
 │   ├── PrivateRoute.tsx # Component for protecting authenticated routes
 │   ├── PublicRoute.tsx  # Component for public routes with auth redirect
 │   ├── Navbar.tsx       # Navigation component
-│   └── ProductForm.tsx  # Offcanvas form component for adding/editing products (streamlined props: productId, setProductId, afterClose)
+│   ├── ProductForm.tsx  # Offcanvas form component for adding/editing products (streamlined props: productId, setProductId, afterClose)
+│   └── ProductFilter.tsx # Advanced filtering component with useState controlled inputs
 ├── pages/
 │   ├── Login.tsx        # User login page with Formik & Yup validation
 │   ├── Register.tsx     # User registration page with Formik & Yup validation
@@ -297,13 +299,127 @@ The application integrates with a backend API at `http://localhost:5000/api` for
 ### Product Routes (/products/\*) - All require authentication
 
 - `POST /products` - Create a new product
-- `GET /products` - Get all products (with optional query params: page, limit, search, category, sortBy, sortOrder)
+- `GET /products` - Get all products with advanced filtering support
 - `GET /products/stats` - Get product statistics
 - `GET /products/:id` - Get single product by ID
 - `PUT /products/:id` - Update product by ID
 - `DELETE /products/:id` - Delete product by ID
 
-All product routes require JWT authentication via cookie. Use `POST /auth/login` to authenticate.
+#### Advanced Filtering Query Parameters
+
+The products endpoint supports comprehensive filtering:
+
+```typescript
+interface ProductQueryParams {
+  page?: number;           // Pagination page number
+  limit?: number;          // Number of items per page
+  name?: string;           // Search by product name (partial match)
+  category?: string;       // Filter by product category
+  minPrice?: number;       // Minimum price filter
+  maxPrice?: number;       // Maximum price filter
+  minQuantity?: number;    // Minimum quantity filter
+  maxQuantity?: number;    // Maximum quantity filter
+  startDate?: string;      // Filter products created after this date (YYYY-MM-DD)
+  endDate?: string;        // Filter products created before this date (YYYY-MM-DD)
+}
+```
+
+#### Filtering Examples
+
+```bash
+# Search by name
+GET /products?name=laptop
+
+# Filter by price range
+GET /products?minPrice=100&maxPrice=1000
+
+# Filter by date range
+GET /products?startDate=2024-01-01&endDate=2024-12-31
+
+# Combined filters
+GET /products?name=phone&category=electronics&minPrice=200&maxPrice=800&startDate=2024-01-01
+
+# Pagination with filters
+GET /products?page=1&limit=10&category=electronics&minQuantity=5
+```
+
+## Advanced Filtering System
+
+The application features a sophisticated product filtering system with real-time updates and useState-controlled components.
+
+### Filter Components
+
+#### ProductFilter Component
+- **Controlled Inputs**: All filter fields use React useState for real-time updates
+- **Offcanvas UI**: Beautiful slide-out filter panel with Bootstrap styling
+- **Multiple Filter Types**: Text search, category, price range, quantity range, date range
+- **Responsive Design**: Mobile-friendly filter interface
+
+#### Filter Fields
+
+- **Name Search**: Real-time search by product name
+- **Category Filter**: Dropdown/text input for category filtering
+- **Price Range**: Min/Max price inputs with number validation
+- **Quantity Range**: Min/Max quantity inputs with number validation
+- **Date Range**: Start/End date pickers for creation date filtering
+
+### State Management
+
+#### useState Controlled Filtering
+
+```typescript
+// Filter state management in ProductList component
+const [filterValues, setFilterValues] = useState<ProductFilters>({
+  name: "",
+  category: "",
+  minPrice: undefined,
+  maxPrice: undefined,
+  minQuantity: undefined,
+  maxQuantity: undefined,
+  startDate: "",
+  endDate: "",
+});
+
+const handleFilterChange = (newFilters: ProductFilters) => {
+  setFilterValues(newFilters); // Real-time state updates
+};
+```
+
+#### Refresh Functionality
+
+```typescript
+const handleRefresh = () => {
+  const resetFilters = {
+    name: "",
+    category: "",
+    minPrice: undefined,
+    maxPrice: undefined,
+    minQuantity: undefined,
+    maxQuantity: undefined,
+    startDate: "",
+    endDate: "",
+  };
+  setFilterValues(resetFilters);    // Reset all filter fields
+  setCurrentFilters(null);          // Clear applied filters
+  fetchProducts(undefined);         // Fetch all products
+};
+```
+
+### Filter Behavior
+
+- **Real-time Updates**: Filter values update as you type
+- **Apply Filters**: Click "Apply Filter" to execute search with current values
+- **Reset on Refresh**: Refresh button clears all filters and shows all products
+- **State Persistence**: Filter values persist until manually reset
+- **Flexible Filtering**: Mix and match any combination of filters
+
+### UI Features
+
+- **Filter Button**: "Filter Products" button in header opens offcanvas panel
+- **Refresh Button**: "Refresh" button resets all filters and reloads data
+- **Apply Button**: "Apply Filter" button executes the current filter combination
+- **Reset Button**: Form reset button clears all filter inputs
+- **Visual Feedback**: Real-time updates show current filter state
 
 ## Product Data Structure
 
@@ -549,6 +665,23 @@ const fetchWithRetry = async () => {
 ```
 
 ## Recent Updates
+
+### v1.0.4 - Advanced Filtering System & useState Controls
+
+- **useState Controlled Filters**: Converted all filter inputs to controlled components with real-time updates
+- **Advanced Filtering**: Added comprehensive filtering by name, category, price range, quantity range, and date range
+- **Refresh Button**: Added refresh functionality that resets all filters and shows all products
+- **Real-time Filter Updates**: Filter values update immediately as user types
+- **Improved Filter UI**: Enhanced offcanvas filter panel with better user experience
+- **Updated API Parameters**: Changed from `search`/`createdAtFrom`/`createdAtTo` to `name`/`startDate`/`endDate`
+- **State Management**: Proper useState management for filter persistence and reset functionality
+
+### v1.0.3 - Refresh Button & UI Enhancements
+
+- **Refresh Button**: Added refresh button to product list header for easy data reloading
+- **Filter Reset**: Refresh button resets all active filters and shows complete product list
+- **UI Consistency**: Maintained consistent button styling across all components
+- **Improved UX**: Better user feedback with loading states and error handling
 
 ### v1.0.2 - UI Enhancements & Quantity Display
 
