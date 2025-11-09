@@ -94,10 +94,6 @@ src/
 │       ├── index.ts    # Endpoint exports
 │       ├── auth.ts     # Authentication endpoint constants
 │       └── products.ts # Product endpoint constants
-├── utils/
-│   ├── urlBuilder.ts       # Shared URL building utility with query parameter support
-│   ├── apiErrorHandler.ts  # Centralized API error handling utility
-│   └── apiWrapper.ts       # API wrapper for automatic error handling
 ├── components/
 │   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
 │   ├── Loading.tsx      # Reusable loading spinner component
@@ -109,10 +105,13 @@ src/
 │   ├── Register.tsx     # User registration page with Formik & Yup validation
 │   └── ProductList.tsx  # Product listing page
 ├── types/
-│   ├── api.ts          # API request/response TypeScript types
+│   ├── api.ts          # API request/response TypeScript types including Product interface
 │   └── auth.ts         # Authentication related TypeScript types
 ├── utils/
-│   └── validation.ts    # Yup validation schemas for forms
+│   ├── urlBuilder.ts       # Shared URL building utility with query parameter support
+│   ├── apiErrorHandler.ts  # Centralized API error handling utility
+│   ├── apiWrapper.ts       # API wrapper for automatic error handling
+│   └── validation.ts       # Yup validation schemas for forms
 └── assets/              # Static assets
 ```
 
