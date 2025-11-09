@@ -23,17 +23,18 @@ const Login: React.FC = () => {
   ) => {
     setIsLoading(true);
     setError(null);
-    try {
-      const response = await authAPI.login(values);
-      localStorage.setItem("userId", response.data._id);
+
+    const result = await authAPI.login(values);
+
+    if (result.success && result.data) {
+      localStorage.setItem("userId", result.data._id);
       navigate("/products");
-    } catch (err: unknown) {
-      console.error("Login error:", (err as Error).message);
-      setError("Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-      setSubmitting(false);
+    } else {
+      setError(result.error?.message || "Login failed. Please try again.");
     }
+
+    setIsLoading(false);
+    setSubmitting(false);
   };
 
   return (

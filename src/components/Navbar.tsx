@@ -14,16 +14,19 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
-    try {
-      await authAPI.logout();
-      localStorage.removeItem("userId");
-      setIsAuthenticated(false);
-      navigate("/");
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      setIsLoggingOut(false);
+
+    const result = await authAPI.logout();
+
+    // Always clear local state regardless of API result
+    localStorage.removeItem("userId");
+    setIsAuthenticated(false);
+    navigate("/");
+
+    if (!result.success) {
+      console.error("Logout error:", result.error?.message);
     }
+
+    setIsLoggingOut(false);
   };
 
   return (

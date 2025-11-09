@@ -25,22 +25,26 @@ const Register: React.FC = () => {
   ) => {
     setIsLoading(true);
     setError(null);
-    try {
-      const data = {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      };
-      const response = await authAPI.register(data);
-      localStorage.setItem("userId", response.data._id);
+
+    const data = {
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    };
+
+    const result = await authAPI.register(data);
+
+    if (result.success && result.data) {
+      localStorage.setItem("userId", result.data._id);
       navigate("/products");
-    } catch (err: unknown) {
-      console.error("Registration error:", (err as Error).message);
-      setError("Registration failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-      setSubmitting(false);
+    } else {
+      setError(
+        result.error?.message || "Registration failed. Please try again."
+      );
     }
+
+    setIsLoading(false);
+    setSubmitting(false);
   };
 
   return (
