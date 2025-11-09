@@ -100,7 +100,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
       }
 
       if (result.success) {
-        resetHandler();
         // Close the offcanvas
         const offcanvas = document.getElementById("productFormOffcanvas");
         if (offcanvas) {
@@ -178,210 +177,221 @@ const ProductForm: React.FC<ProductFormProps> = ({
       id="productFormOffcanvas"
       aria-labelledby="productFormOffcanvasLabel"
     >
-      <div className="offcanvas-header bg-primary text-white shadow-sm">
-        <h5
-          className="offcanvas-title fw-bold mb-0"
-          id="productFormOffcanvasLabel"
-        >
-          {title}
-        </h5>
-        <button
-          type="button"
-          className="btn-close bg-white rounded-circle d-flex align-items-center justify-content-center"
-          data-bs-dismiss="offcanvas"
-          aria-label="Close"
-          onClick={resetHandler}
-          style={{
-            border: "2px solid rgba(255, 255, 255, 0.2)",
-            boxShadow: "0 2px 8px rgba(0, 123, 255, 0.3)",
-            transition: "all 0.3s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "scale(1.1)";
-            e.currentTarget.style.boxShadow =
-              "0 4px 12px rgba(0, 123, 255, 0.4)";
-            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.4)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "scale(1)";
-            e.currentTarget.style.boxShadow =
-              "0 2px 8px rgba(0, 123, 255, 0.3)";
-            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.2)";
-          }}
-        ></button>
-      </div>
-      <div className="offcanvas-body p-4">
-        <Formik
-          initialValues={initialValues}
-          validationSchema={productFormValidationSchema}
-          onSubmit={handleSubmit}
-          enableReinitialize
-        >
-          {({ isSubmitting }) => (
-            <Form className="d-flex flex-column gap-4">
-              {/* Product Name */}
-              <div className="form-group">
-                <label
-                  htmlFor="name"
-                  className="form-label fw-semibold text-dark mb-2"
-                >
-                  Product Name *
-                </label>
-                <Field
-                  type="text"
-                  id="name"
-                  name="name"
-                  className="form-control form-control-lg border-2"
-                  placeholder="Enter product name"
-                  style={{
-                    borderRadius: "8px",
-                    borderColor: "#e9ecef",
-                    padding: "12px 16px",
-                    fontSize: "16px",
-                  }}
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-danger mt-1 small"
-                />
-              </div>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={productFormValidationSchema}
+        onSubmit={async (values, { resetForm }) => {
+          await handleSubmit(values);
+          resetForm();
+          resetHandler();
+        }}
+        enableReinitialize
+      >
+        {(formik) => (
+          <>
+            <div className="offcanvas-header bg-primary text-white shadow-sm">
+              <h5
+                className="offcanvas-title fw-bold mb-0"
+                id="productFormOffcanvasLabel"
+              >
+                {title}
+              </h5>
+              <button
+                type="button"
+                className="btn-close bg-white rounded-circle d-flex align-items-center justify-content-center"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+                onClick={() => {
+                  resetHandler();
+                  formik.resetForm();
+                }}
+                style={{
+                  border: "2px solid rgba(255, 255, 255, 0.2)",
+                  boxShadow: "0 2px 8px rgba(0, 123, 255, 0.3)",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "scale(1.1)";
+                  e.currentTarget.style.boxShadow =
+                    "0 4px 12px rgba(0, 123, 255, 0.4)";
+                  e.currentTarget.style.borderColor =
+                    "rgba(255, 255, 255, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.boxShadow =
+                    "0 2px 8px rgba(0, 123, 255, 0.3)";
+                  e.currentTarget.style.borderColor =
+                    "rgba(255, 255, 255, 0.2)";
+                }}
+              ></button>
+            </div>
+            <div className="offcanvas-body p-4">
+              <Form className="d-flex flex-column gap-4">
+                {/* Product Name */}
+                <div className="form-group">
+                  <label
+                    htmlFor="name"
+                    className="form-label fw-semibold text-dark mb-2"
+                  >
+                    Product Name *
+                  </label>
+                  <Field
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="form-control form-control-lg border-2"
+                    placeholder="Enter product name"
+                    style={{
+                      borderRadius: "8px",
+                      borderColor: "#e9ecef",
+                      padding: "12px 16px",
+                      fontSize: "16px",
+                    }}
+                  />
+                  <ErrorMessage
+                    name="name"
+                    component="div"
+                    className="text-danger mt-1 small"
+                  />
+                </div>
 
-              {/* Description */}
-              <div className="form-group">
-                <label
-                  htmlFor="description"
-                  className="form-label fw-semibold text-dark mb-2"
-                >
-                  Description *
-                </label>
-                <Field
-                  as="textarea"
-                  id="description"
-                  name="description"
-                  className="form-control border-2"
-                  rows={4}
-                  placeholder="Enter product description"
-                  style={{
-                    borderRadius: "8px",
-                    borderColor: "#e9ecef",
-                    padding: "12px 16px",
-                    fontSize: "16px",
-                    resize: "vertical",
-                  }}
-                />
-                <ErrorMessage
-                  name="description"
-                  component="div"
-                  className="text-danger mt-1 small"
-                />
-              </div>
+                {/* Description */}
+                <div className="form-group">
+                  <label
+                    htmlFor="description"
+                    className="form-label fw-semibold text-dark mb-2"
+                  >
+                    Description *
+                  </label>
+                  <Field
+                    as="textarea"
+                    id="description"
+                    name="description"
+                    className="form-control border-2"
+                    rows={4}
+                    placeholder="Enter product description"
+                    style={{
+                      borderRadius: "8px",
+                      borderColor: "#e9ecef",
+                      padding: "12px 16px",
+                      fontSize: "16px",
+                      resize: "vertical",
+                    }}
+                  />
+                  <ErrorMessage
+                    name="description"
+                    component="div"
+                    className="text-danger mt-1 small"
+                  />
+                </div>
 
-              {/* Price and Quantity Row */}
-              <div className="row g-3">
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <label
-                      htmlFor="price"
-                      className="form-label fw-semibold text-dark mb-2"
-                    >
-                      Price (₹) *
-                    </label>
-                    <Field
-                      type="number"
-                      id="price"
-                      name="price"
-                      className="form-control form-control-lg border-2"
-                      placeholder="0"
-                      min="0"
-                      step="0.01"
-                      style={{
-                        borderRadius: "8px",
-                        borderColor: "#e9ecef",
-                        padding: "12px 16px",
-                        fontSize: "16px",
-                      }}
-                    />
-                    <ErrorMessage
-                      name="price"
-                      component="div"
-                      className="text-danger mt-1 small"
-                    />
+                {/* Price and Quantity Row */}
+                <div className="row g-3">
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label
+                        htmlFor="price"
+                        className="form-label fw-semibold text-dark mb-2"
+                      >
+                        Price (₹) *
+                      </label>
+                      <Field
+                        type="number"
+                        id="price"
+                        name="price"
+                        className="form-control form-control-lg border-2"
+                        placeholder="0"
+                        min="0"
+                        step="0.01"
+                        style={{
+                          borderRadius: "8px",
+                          borderColor: "#e9ecef",
+                          padding: "12px 16px",
+                          fontSize: "16px",
+                        }}
+                      />
+                      <ErrorMessage
+                        name="price"
+                        component="div"
+                        className="text-danger mt-1 small"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="col-md-6">
+                    <div className="form-group">
+                      <label
+                        htmlFor="quantity"
+                        className="form-label fw-semibold text-dark mb-2"
+                      >
+                        Quantity *
+                      </label>
+                      <Field
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        className="form-control form-control-lg border-2"
+                        placeholder="1"
+                        min="1"
+                        style={{
+                          borderRadius: "8px",
+                          borderColor: "#e9ecef",
+                          padding: "12px 16px",
+                          fontSize: "16px",
+                        }}
+                      />
+                      <ErrorMessage
+                        name="quantity"
+                        component="div"
+                        className="text-danger mt-1 small"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="col-md-6">
-                  <div className="form-group">
-                    <label
-                      htmlFor="quantity"
-                      className="form-label fw-semibold text-dark mb-2"
-                    >
-                      Quantity *
-                    </label>
-                    <Field
-                      type="number"
-                      id="quantity"
-                      name="quantity"
-                      className="form-control form-control-lg border-2"
-                      placeholder="1"
-                      min="1"
-                      style={{
-                        borderRadius: "8px",
-                        borderColor: "#e9ecef",
-                        padding: "12px 16px",
-                        fontSize: "16px",
-                      }}
-                    />
-                    <ErrorMessage
-                      name="quantity"
-                      component="div"
-                      className="text-danger mt-1 small"
-                    />
-                  </div>
+                {/* Submit Button */}
+                <div className="mt-4 pt-3 border-top">
+                  <button
+                    type="submit"
+                    disabled={formik.isSubmitting || loading}
+                    className="btn btn-primary btn-lg w-100 py-3 fw-semibold rounded-pill d-flex align-items-center justify-content-center gap-2"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, #007bff 0%, #0056b3 100%)",
+                      border: "none",
+                      boxShadow: "0 4px 15px rgba(0, 123, 255, 0.3)",
+                      fontSize: "16px",
+                    }}
+                  >
+                    {formik.isSubmitting || loading ? (
+                      <>
+                        <div
+                          className="spinner-border spinner-border-sm"
+                          role="status"
+                        >
+                          <span className="visually-hidden">Loading...</span>
+                        </div>
+                        {isEditing ? "Updating..." : "Creating..."}
+                      </>
+                    ) : (
+                      <>
+                        <i
+                          className="material-icons"
+                          style={{ fontSize: "20px" }}
+                        >
+                          {isEditing ? "save" : "add_circle"}
+                        </i>
+                        {isEditing ? "Update Product" : "Create Product"}
+                      </>
+                    )}
+                  </button>
                 </div>
-              </div>
-
-              {/* Submit Button */}
-              <div className="mt-4 pt-3 border-top">
-                <button
-                  type="submit"
-                  disabled={isSubmitting || loading}
-                  className="btn btn-primary btn-lg w-100 py-3 fw-semibold rounded-pill d-flex align-items-center justify-content-center gap-2"
-                  style={{
-                    background:
-                      "linear-gradient(135deg, #007bff 0%, #0056b3 100%)",
-                    border: "none",
-                    boxShadow: "0 4px 15px rgba(0, 123, 255, 0.3)",
-                    fontSize: "16px",
-                  }}
-                >
-                  {isSubmitting || loading ? (
-                    <>
-                      <div
-                        className="spinner-border spinner-border-sm"
-                        role="status"
-                      >
-                        <span className="visually-hidden">Loading...</span>
-                      </div>
-                      {isEditing ? "Updating..." : "Creating..."}
-                    </>
-                  ) : (
-                    <>
-                      <i
-                        className="material-icons"
-                        style={{ fontSize: "20px" }}
-                      >
-                        {isEditing ? "save" : "add_circle"}
-                      </i>
-                      {isEditing ? "Update Product" : "Create Product"}
-                    </>
-                  )}
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      </div>
+              </Form>
+            </div>
+          </>
+        )}
+      </Formik>
     </div>
   );
 };
