@@ -1,0 +1,215 @@
+import React from "react";
+
+interface ProductFilters {
+  search?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minQuantity?: number;
+  maxQuantity?: number;
+  sortBy?: string;
+  sortOrder?: string;
+}
+
+interface ProductFilterProps {
+  onFilter?: (filters: ProductFilters) => void;
+}
+
+const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
+  const handleFilterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+
+    const filters = {
+      search: formData.get("search") as string,
+      category: formData.get("category") as string,
+      minPrice: formData.get("minPrice")
+        ? parseFloat(formData.get("minPrice") as string)
+        : undefined,
+      maxPrice: formData.get("maxPrice")
+        ? parseFloat(formData.get("maxPrice") as string)
+        : undefined,
+      minQuantity: formData.get("minQuantity")
+        ? parseInt(formData.get("minQuantity") as string)
+        : undefined,
+      maxQuantity: formData.get("maxQuantity")
+        ? parseInt(formData.get("maxQuantity") as string)
+        : undefined,
+      sortBy: formData.get("sortBy") as string,
+      sortOrder: formData.get("sortOrder") as string,
+    };
+
+    if (onFilter) {
+      onFilter(filters);
+    }
+
+    // Close the offcanvas
+    const offcanvas = document.getElementById("productFilterOffcanvas");
+    if (offcanvas) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const bsOffcanvas = (window as any).bootstrap.Offcanvas.getInstance(
+        offcanvas
+      );
+      bsOffcanvas?.hide();
+    }
+  };
+
+  const handleReset = () => {
+    const form = document.querySelector(
+      "#productFilterOffcanvas form"
+    ) as HTMLFormElement;
+    if (form) {
+      form.reset();
+    }
+  };
+
+  return (
+    <div
+      className="offcanvas offcanvas-end"
+      tabIndex={-1}
+      id="productFilterOffcanvas"
+      aria-labelledby="productFilterOffcanvasLabel"
+      data-bs-scroll="true"
+      data-bs-backdrop="static"
+    >
+      <div className="offcanvas-header bg-secondary text-white shadow-sm">
+        <h5
+          className="offcanvas-title fw-bold mb-0"
+          id="productFilterOffcanvasLabel"
+        >
+          Filter Products
+        </h5>
+        <button
+          type="button"
+          className="btn-close bg-white rounded-circle"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div className="offcanvas-body p-4">
+        {/* Filter Form */}
+        <form
+          onSubmit={handleFilterSubmit}
+          className="d-flex flex-column gap-3"
+        >
+          <div className="form-group">
+            <label htmlFor="search" className="form-label fw-semibold">
+              Search
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="search"
+              name="search"
+              placeholder="Search by name or description"
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="category" className="form-label fw-semibold">
+              Category
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="category"
+              name="category"
+              placeholder="Category"
+            />
+          </div>
+          <div className="row g-2">
+            <div className="col">
+              <label htmlFor="minPrice" className="form-label fw-semibold">
+                Min Price
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="minPrice"
+                name="minPrice"
+                placeholder="0"
+                min="0"
+              />
+            </div>
+            <div className="col">
+              <label htmlFor="maxPrice" className="form-label fw-semibold">
+                Max Price
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="maxPrice"
+                name="maxPrice"
+                placeholder="1000000"
+                min="0"
+              />
+            </div>
+          </div>
+          <div className="row g-2">
+            <div className="col">
+              <label htmlFor="minQuantity" className="form-label fw-semibold">
+                Min Quantity
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="minQuantity"
+                name="minQuantity"
+                placeholder="1"
+                min="1"
+              />
+            </div>
+            <div className="col">
+              <label htmlFor="maxQuantity" className="form-label fw-semibold">
+                Max Quantity
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="maxQuantity"
+                name="maxQuantity"
+                placeholder="10000"
+                min="1"
+              />
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="sortBy" className="form-label fw-semibold">
+              Sort By
+            </label>
+            <select className="form-select" id="sortBy" name="sortBy">
+              <option value="createdAt">Created At</option>
+              <option value="price">Price</option>
+              <option value="quantity">Quantity</option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="sortOrder" className="form-label fw-semibold">
+              Sort Order
+            </label>
+            <select className="form-select" id="sortOrder" name="sortOrder">
+              <option value="desc">Descending</option>
+              <option value="asc">Ascending</option>
+            </select>
+          </div>
+          <div className="d-flex gap-2 mt-3">
+            <button
+              type="submit"
+              className="btn btn-secondary rounded-pill px-4 fw-semibold"
+            >
+              Apply Filter
+            </button>
+            <button
+              type="button"
+              onClick={handleReset}
+              className="btn btn-outline-secondary rounded-pill px-4 fw-semibold"
+            >
+              Reset
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default ProductFilter;

@@ -2,8 +2,20 @@ import React, { useState, useEffect } from "react";
 import { productsAPI } from "../services/api";
 import type { Product } from "../types/api";
 import ProductForm from "../components/ProductForm";
+import ProductFilter from "../components/ProductFilter";
 import Loading from "../components/Loading";
 import EmptyState from "../components/EmptyState";
+
+interface ProductFilters {
+  search?: string;
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  minQuantity?: number;
+  maxQuantity?: number;
+  sortBy?: string;
+  sortOrder?: string;
+}
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,6 +50,13 @@ const ProductList: React.FC = () => {
 
   const handleAfterClose = () => {
     fetchProducts();
+  };
+
+  // Handler for filter application
+  const handleFilter = (filters: ProductFilters) => {
+    console.log("Applying filters:", filters);
+    // TODO: Implement filter logic with API call
+    // fetchProducts(filters);
   };
 
   const fetchProducts = async () => {
@@ -274,142 +293,7 @@ const ProductList: React.FC = () => {
         setProductId={setProductId}
         afterClose={handleAfterClose}
       />
-      {/* Filter Offcanvas */}
-      <div
-        className="offcanvas offcanvas-end"
-        tabIndex={-1}
-        id="productFilterOffcanvas"
-        aria-labelledby="productFilterOffcanvasLabel"
-        data-bs-scroll="true"
-        data-bs-backdrop="static"
-      >
-        <div className="offcanvas-header bg-secondary text-white shadow-sm">
-          <h5
-            className="offcanvas-title fw-bold mb-0"
-            id="productFilterOffcanvasLabel"
-          >
-            Filter Products
-          </h5>
-          <button
-            type="button"
-            className="btn-close bg-white rounded-circle"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div className="offcanvas-body p-4">
-          {/* Filter Form */}
-          <form className="d-flex flex-column gap-3">
-            <div className="form-group">
-              <label htmlFor="search" className="form-label fw-semibold">
-                Search
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="search"
-                placeholder="Search by name or description"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="category" className="form-label fw-semibold">
-                Category
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="category"
-                placeholder="Category"
-              />
-            </div>
-            <div className="row g-2">
-              <div className="col">
-                <label htmlFor="minPrice" className="form-label fw-semibold">
-                  Min Price
-                </label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="minPrice"
-                  placeholder="0"
-                  min="0"
-                />
-              </div>
-              <div className="col">
-                <label htmlFor="maxPrice" className="form-label fw-semibold">
-                  Max Price
-                </label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="maxPrice"
-                  placeholder="1000000"
-                  min="0"
-                />
-              </div>
-            </div>
-            <div className="row g-2">
-              <div className="col">
-                <label htmlFor="minQuantity" className="form-label fw-semibold">
-                  Min Quantity
-                </label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="minQuantity"
-                  placeholder="1"
-                  min="1"
-                />
-              </div>
-              <div className="col">
-                <label htmlFor="maxQuantity" className="form-label fw-semibold">
-                  Max Quantity
-                </label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="maxQuantity"
-                  placeholder="10000"
-                  min="1"
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <label htmlFor="sortBy" className="form-label fw-semibold">
-                Sort By
-              </label>
-              <select className="form-select" id="sortBy">
-                <option value="createdAt">Created At</option>
-                <option value="price">Price</option>
-                <option value="quantity">Quantity</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="sortOrder" className="form-label fw-semibold">
-                Sort Order
-              </label>
-              <select className="form-select" id="sortOrder">
-                <option value="desc">Descending</option>
-                <option value="asc">Ascending</option>
-              </select>
-            </div>
-            <div className="d-flex gap-2 mt-3">
-              <button
-                type="submit"
-                className="btn btn-secondary rounded-pill px-4 fw-semibold"
-              >
-                Apply Filter
-              </button>
-              <button
-                type="reset"
-                className="btn btn-outline-secondary rounded-pill px-4 fw-semibold"
-              >
-                Reset
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <ProductFilter onFilter={handleFilter} />
     </div>
   );
 };
