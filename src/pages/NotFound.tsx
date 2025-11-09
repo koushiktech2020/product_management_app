@@ -9,17 +9,7 @@ const NotFound: React.FC = () => {
           <div className="text-center">
             {/* 404 Illustration */}
             <div className="mb-4">
-              <div
-                style={{
-                  fontSize: "8rem",
-                  fontWeight: "bold",
-                  color: "#6c757d",
-                  opacity: 0.3,
-                  lineHeight: 1,
-                }}
-              >
-                404
-              </div>
+              <div className="notfound-number">404</div>
             </div>
 
             {/* Error Message */}
