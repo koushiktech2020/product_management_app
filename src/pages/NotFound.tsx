@@ -24,16 +24,19 @@ const NotFound: React.FC = () => {
 
             {/* Action Buttons */}
             <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-5">
-              <Link to="/" className="btn btn-primary btn-lg px-4">
-                <i className="bi bi-house-door me-2"></i>
+              <Link
+                to="/"
+                className="btn btn-primary btn-lg px-4 d-flex align-items-center gap-1"
+              >
+                <i className="bi bi-house-door"></i>
                 Go Home
               </Link>
 
               <Link
                 to="/products"
-                className="btn btn-outline-primary btn-lg px-4"
+                className="btn btn-outline-primary btn-lg px-4 d-flex align-items-center gap-1"
               >
-                <i className="bi bi-grid me-2"></i>
+                <i className="bi bi-grid"></i>
                 View Products
               </Link>
             </div>

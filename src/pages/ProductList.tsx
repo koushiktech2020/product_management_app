@@ -84,8 +84,11 @@ const ProductList: React.FC = () => {
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>Product List</h1>
-        <button className="btn btn-primary" onClick={handleAddProduct}>
-          <i className="material-icons me-2">add_circle</i>
+        <button
+          className="btn btn-primary d-flex align-items-center gap-1"
+          onClick={handleAddProduct}
+        >
+          <i className="material-icons">add_circle</i>
           Add New Product
         </button>
       </div>
@@ -109,20 +112,20 @@ const ProductList: React.FC = () => {
                   </small>
                   <div className="d-flex gap-2 mt-2">
                     <button
-                      className="btn btn-outline-primary btn-sm"
+                      className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
                       onClick={() => handleEditProduct(product)}
                     >
                       <i
-                        className="material-icons me-1"
+                        className="material-icons"
                         style={{ fontSize: "16px" }}
                       >
                         edit
                       </i>
                       Edit
                     </button>
-                    <button className="btn btn-outline-danger btn-sm">
+                    <button className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
                       <i
-                        className="material-icons me-1"
+                        className="material-icons"
                         style={{ fontSize: "16px" }}
                       >
                         delete
