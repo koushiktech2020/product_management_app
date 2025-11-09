@@ -70,6 +70,14 @@ export interface ProductQueryParams {
   category?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  price?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  quantity?: number;
+  minQuantity?: number;
+  maxQuantity?: number;
+  createdAtFrom?: string;
+  createdAtTo?: string;
 }
 
 export type ProductUpdateData = Partial<ProductData>;

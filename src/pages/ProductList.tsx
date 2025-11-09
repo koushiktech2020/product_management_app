@@ -13,8 +13,8 @@ interface ProductFilters {
   maxPrice?: number;
   minQuantity?: number;
   maxQuantity?: number;
-  sortBy?: string;
-  sortOrder?: string;
+  createdAtFrom?: string;
+  createdAtTo?: string;
 }
 
 const ProductList: React.FC = () => {
@@ -22,6 +22,9 @@ const ProductList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [productId, setProductId] = useState<string | null>(null);
+  const [currentFilters, setCurrentFilters] = useState<ProductFilters | null>(
+    null
+  );
 
   const handleEditProduct = (product: Product) => {
     setProductId(product._id);
@@ -32,12 +35,8 @@ const ProductList: React.FC = () => {
       try {
         const result = await productsAPI.delete(product._id);
         if (result.success) {
-          // Refresh the products list after successful deletion
-          const refreshResult = await productsAPI.getAll();
-          if (refreshResult.success && refreshResult.data) {
-            const { data } = refreshResult.data;
-            setProducts(data);
-          }
+          // Refresh the products list after successful deletion with current filters
+          fetchProducts(currentFilters || undefined);
         } else {
           alert("Failed to delete product. Please try again.");
         }
@@ -54,14 +53,14 @@ const ProductList: React.FC = () => {
 
   // Handler for filter application
   const handleFilter = (filters: ProductFilters) => {
-    console.log("Applying filters:", filters);
-    // TODO: Implement filter logic with API call
-    // fetchProducts(filters);
+    setCurrentFilters(filters);
+    fetchProducts(filters);
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (filters?: ProductFilters) => {
     try {
-      const result = await productsAPI.getAll();
+      setLoading(true);
+      const result = await productsAPI.getAll(filters || undefined);
 
       if (result.success && result.data) {
         const { data } = result.data;
@@ -96,7 +95,7 @@ const ProductList: React.FC = () => {
           <span>Add New Product</span>
         </button>
         <button
-          className="btn btn-outline-secondary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
+          className="btn btn-outline-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
           type="button"
           data-bs-toggle="offcanvas"
           data-bs-target="#productFilterOffcanvas"
@@ -124,7 +123,7 @@ const ProductList: React.FC = () => {
           <p>{error}</p>
           <button
             className="btn btn-outline-danger rounded-pill fw-medium px-3 py-2 transition-all"
-            onClick={fetchProducts}
+            onClick={() => fetchProducts(currentFilters || undefined)}
             style={{
               border: "1px solid #dc3545",
               boxShadow: "0 2px 8px rgba(220, 53, 69, 0.15)",

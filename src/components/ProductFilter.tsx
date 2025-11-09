@@ -7,8 +7,8 @@ interface ProductFilters {
   maxPrice?: number;
   minQuantity?: number;
   maxQuantity?: number;
-  sortBy?: string;
-  sortOrder?: string;
+  createdAtFrom?: string;
+  createdAtTo?: string;
 }
 
 interface ProductFilterProps {
@@ -20,7 +20,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
 
-    const filters = {
+    const filters: ProductFilters = {
       search: formData.get("search") as string,
       category: formData.get("category") as string,
       minPrice: formData.get("minPrice")
@@ -35,8 +35,8 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
       maxQuantity: formData.get("maxQuantity")
         ? parseInt(formData.get("maxQuantity") as string)
         : undefined,
-      sortBy: formData.get("sortBy") as string,
-      sortOrder: formData.get("sortOrder") as string,
+      createdAtFrom: formData.get("createdAtFrom") as string,
+      createdAtTo: formData.get("createdAtTo") as string,
     };
 
     if (onFilter) {
@@ -72,7 +72,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
       data-bs-scroll="true"
       data-bs-backdrop="static"
     >
-      <div className="offcanvas-header bg-secondary text-white shadow-sm">
+      <div className="offcanvas-header bg-primary text-white shadow-sm">
         <h5
           className="offcanvas-title fw-bold mb-0"
           id="productFilterOffcanvasLabel"
@@ -84,6 +84,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
           className="btn-close bg-white rounded-circle"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
+          onClick={handleReset}
         ></button>
       </div>
       <div className="offcanvas-body p-4">
@@ -139,7 +140,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
                 className="form-control"
                 id="maxPrice"
                 name="maxPrice"
-                placeholder="1000000"
+                placeholder="100"
                 min="0"
               />
             </div>
@@ -167,43 +168,41 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
                 className="form-control"
                 id="maxQuantity"
                 name="maxQuantity"
-                placeholder="10000"
+                placeholder="10"
                 min="1"
               />
             </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="sortBy" className="form-label fw-semibold">
-              Sort By
-            </label>
-            <select className="form-select" id="sortBy" name="sortBy">
-              <option value="createdAt">Created At</option>
-              <option value="price">Price</option>
-              <option value="quantity">Quantity</option>
-            </select>
+          <div className="row g-3">
+            <div className="col">
+              <label htmlFor="createdAtFrom" className="form-label fw-semibold">
+                Created From
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                id="createdAtFrom"
+                name="createdAtFrom"
+              />
+            </div>
+            <div className="col">
+              <label htmlFor="createdAtTo" className="form-label fw-semibold">
+                Created To
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                id="createdAtTo"
+                name="createdAtTo"
+              />
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="sortOrder" className="form-label fw-semibold">
-              Sort Order
-            </label>
-            <select className="form-select" id="sortOrder" name="sortOrder">
-              <option value="desc">Descending</option>
-              <option value="asc">Ascending</option>
-            </select>
-          </div>
-          <div className="d-flex gap-2 mt-3">
+          <div className="mt-3">
             <button
               type="submit"
-              className="btn btn-secondary rounded-pill px-4 fw-semibold"
+              className="btn btn-primary rounded-pill px-4 fw-semibold w-100"
             >
               Apply Filter
-            </button>
-            <button
-              type="button"
-              onClick={handleReset}
-              className="btn btn-outline-secondary rounded-pill px-4 fw-semibold"
-            >
-              Reset
             </button>
           </div>
         </form>
