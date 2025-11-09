@@ -44,7 +44,7 @@ export interface ProductData {
   description: string;
   price: number;
   category: string;
-  stock: number;
+  quantity: number;
 }
 
 export interface Product {
@@ -53,7 +53,7 @@ export interface Product {
   description: string;
   price: number;
   category?: string; // Optional for backward compatibility
-  stock?: number; // Optional for backward compatibility
+  quantity?: number; // Optional for backward compatibility
   createdBy: {
     _id: string;
     name: string;

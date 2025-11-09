@@ -63,13 +63,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     try {
       const result = await productsAPI.getById(productId);
+
       if (result.success && result.data) {
-        const product = result.data;
+        const { data: product } = result.data;
+        console.log("Fetched product:", product);
         setInitialValues({
           name: product.name,
           description: product.description,
           price: product.price,
-          quantity: product.stock || product.quantity || 1,
+          quantity: product.quantity || 1,
         });
       }
     } catch (error) {
@@ -85,7 +87,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         description: values.description,
         price: values.price,
         category: "General", // Default category
-        stock: values.quantity,
+        quantity: values.quantity,
       };
 
       let result;
@@ -137,6 +139,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
     }
   };
 
+  const resetHandler = () => {
+    setInitialValues({
+      name: "",
+      description: "",
+      price: 0,
+      quantity: 1,
+    });
+    if (setProductId) {
+      setProductId(null);
+    }
+  };
+
   // Fetch product data if editing
   useEffect(() => {
     if (isEditing && productId) {
@@ -173,7 +187,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           className="btn-close bg-white rounded-circle d-flex align-items-center justify-content-center"
           data-bs-dismiss="offcanvas"
           aria-label="Close"
-          onClick={afterClose}
+          onClick={resetHandler}
           style={{
             border: "2px solid rgba(255, 255, 255, 0.2)",
             boxShadow: "0 2px 8px rgba(0, 123, 255, 0.3)",

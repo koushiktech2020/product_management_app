@@ -37,7 +37,7 @@ const ProductList: React.FC = () => {
   };
 
   const handleAfterClose = () => {
-    setProductId(null);
+    fetchProducts();
   };
 
   const fetchProducts = async () => {
@@ -154,7 +154,8 @@ const ProductList: React.FC = () => {
                       onClick={() => handleEditProduct(product)}
                       style={{
                         background:
-                          "linear-gradient(135deg, #007bff 0%, #0056b3 100%)",
+                          "linear-gradient(135deg, #4198f5ff 0%, #3493f8ff 100%)",
+                        color: "white",
                         border: "none",
                         boxShadow: "0 4px 15px rgba(0, 123, 255, 0.3)",
                       }}
@@ -167,7 +168,7 @@ const ProductList: React.FC = () => {
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.backgroundColor = "transparent";
-                        e.currentTarget.style.color = "#007bff";
+                        e.currentTarget.style.color = "#ffffff";
                         e.currentTarget.style.transform = "translateY(0)";
                         e.currentTarget.style.boxShadow =
                           "0 2px 8px rgba(0, 123, 255, 0.15)";
