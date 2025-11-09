@@ -43,13 +43,15 @@ const ProductList: React.FC = () => {
     <div className="d-flex justify-content-between align-items-center mb-4">
       <h1>Product List</h1>
       <button
-        className="btn btn-primary d-flex align-items-center gap-1"
+        className="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
         data-bs-toggle="offcanvas"
         data-bs-target="#productFormOffcanvas"
         aria-controls="productFormOffcanvas"
       >
-        <i className="material-icons">add_circle</i>
-        Add New Product
+        <i className="material-icons" style={{ fontSize: "20px" }}>
+          add_circle
+        </i>
+        <span>Add New Product</span>
       </button>
     </div>
   );
@@ -65,7 +67,34 @@ const ProductList: React.FC = () => {
         <div className="alert alert-danger" role="alert">
           <h4 className="alert-heading">Error Loading Products</h4>
           <p>{error}</p>
-          <button className="btn btn-outline-danger" onClick={fetchProducts}>
+          <button
+            className="btn btn-outline-danger rounded-pill fw-medium px-3 py-2 transition-all"
+            onClick={fetchProducts}
+            style={{
+              border: "1px solid #dc3545",
+              boxShadow: "0 2px 8px rgba(220, 53, 69, 0.15)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#dc3545";
+              e.currentTarget.style.color = "white";
+              e.currentTarget.style.transform = "translateY(-1px)";
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(220, 53, 69, 0.3)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#dc3545";
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 2px 8px rgba(220, 53, 69, 0.15)";
+            }}
+          >
+            <i
+              className="material-icons me-1"
+              style={{ fontSize: "16px", verticalAlign: "middle" }}
+            >
+              refresh
+            </i>
             Try Again
           </button>
         </div>
@@ -96,8 +125,26 @@ const ProductList: React.FC = () => {
                   </small>
                   <div className="d-flex gap-2 mt-2">
                     <button
-                      className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
+                      className="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 rounded-pill fw-medium transition-all"
                       onClick={() => handleEditProduct(product)}
+                      style={{
+                        border: "1px solid #007bff",
+                        boxShadow: "0 2px 8px rgba(0, 123, 255, 0.15)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#007bff";
+                        e.currentTarget.style.color = "white";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                        e.currentTarget.style.boxShadow =
+                          "0 4px 12px rgba(0, 123, 255, 0.3)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#007bff";
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow =
+                          "0 2px 8px rgba(0, 123, 255, 0.15)";
+                      }}
                     >
                       <i
                         className="material-icons"
@@ -107,7 +154,27 @@ const ProductList: React.FC = () => {
                       </i>
                       Edit
                     </button>
-                    <button className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
+                    <button
+                      className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 rounded-pill fw-medium transition-all"
+                      style={{
+                        border: "1px solid #dc3545",
+                        boxShadow: "0 2px 8px rgba(220, 53, 69, 0.15)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#dc3545";
+                        e.currentTarget.style.color = "white";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                        e.currentTarget.style.boxShadow =
+                          "0 4px 12px rgba(220, 53, 69, 0.3)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                        e.currentTarget.style.color = "#dc3545";
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow =
+                          "0 2px 8px rgba(220, 53, 69, 0.15)";
+                      }}
+                    >
                       <i
                         className="material-icons"
                         style={{ fontSize: "16px" }}
