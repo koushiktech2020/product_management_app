@@ -6,24 +6,24 @@ A modern React-based product management application built with TypeScript and Vi
 
 - **Enhanced User Authentication**: Login/Register with secure API integration using user ID from server responses
 - User logout functionality with API integration
-- Product listing and management
+- Product listing and management with beautiful offcanvas forms
 - Protected routes with robust authentication checks
 - API integration with backend for authentication and product management
-- Responsive design with Bootstrap 5
+- Responsive design with Bootstrap 5 and Google Material Icons
 - Modern React 19 with TypeScript
 - Fast development with Vite
 - Client-side routing with React Router DOM
 - Form validation utilities
 - HTTP requests with Axios (direct implementation for optimal performance)
 - ESLint for code quality
-- Custom CSS styling
+- Clean Bootstrap styling (no custom CSS classes)
 
 ## Tech Stack
 
 - **Frontend**: React 19, TypeScript
 - **Build Tool**: Vite
 - **Routing**: React Router DOM
-- **Styling**: Bootstrap 5 (via CDN), Custom CSS
+- **Styling**: Bootstrap 5 (via CDN), Google Material Icons
 - **Forms**: Formik (form handling)
 - **Validation**: Yup (schema validation)
 - **HTTP Client**: Axios (direct implementation for optimal performance)
@@ -84,7 +84,7 @@ src/
 ├── App.tsx              # Main application component (uses routes from routes.tsx)
 ├── routes.tsx           # Centralized route configuration (React Router v7)
 ├── main.tsx             # Application entry point
-├── index.css            # Global styles and custom CSS
+├── index.css            # Global styles (minimal, mostly Bootstrap overrides)
 ├── services/
 │   ├── api.ts          # Backward compatibility exports (used by existing components)
 │   ├── http.ts         # Axios configuration with interceptors
@@ -100,7 +100,7 @@ src/
 │   ├── PrivateRoute.tsx # Component for protecting authenticated routes
 │   ├── PublicRoute.tsx  # Component for public routes with auth redirect
 │   ├── Navbar.tsx       # Navigation component
-│   └── ProductForm.tsx  # Offcanvas form component for adding/editing products
+│   └── ProductForm.tsx  # Offcanvas form component for adding/editing products (uses Bootstrap classes)
 ├── pages/
 │   ├── Login.tsx        # User login page with Formik & Yup validation
 │   ├── Register.tsx     # User registration page with Formik & Yup validation
@@ -116,6 +116,43 @@ src/
 │   └── index.ts            # Utility exports
 └── assets/              # Static assets
 ```
+
+## Styling & Icons
+
+The application uses a clean, maintainable styling approach:
+
+### Bootstrap-First Design
+
+- **Standard Bootstrap Classes**: All components use standard Bootstrap 5 classes for consistency and maintainability
+- **No Custom CSS Classes**: Removed custom CSS classes in favor of Bootstrap utilities
+- **Responsive Design**: Built-in Bootstrap responsive utilities for all screen sizes
+- **Consistent Theming**: Uses Bootstrap's default theme with minimal overrides
+
+### Icon System
+
+The application supports multiple icon systems for flexibility:
+
+#### Bootstrap Icons (Primary)
+
+```jsx
+<i className="bi bi-plus-circle-fill"></i>
+<i className="bi bi-pencil-square"></i>
+```
+
+#### Google Material Icons (Alternative)
+
+```jsx
+<i className="material-icons">add</i>
+<i className="material-icons">edit</i>
+```
+
+### Styling Guidelines
+
+- **Component Structure**: Use semantic Bootstrap classes (`btn`, `form-control`, `card`, etc.)
+- **Layout**: Bootstrap grid system (`row`, `col-md-6`, etc.)
+- **Spacing**: Bootstrap spacing utilities (`mb-3`, `p-2`, etc.)
+- **Colors**: Bootstrap color classes (`text-primary`, `bg-light`, etc.)
+- **Typography**: Bootstrap text utilities (`fw-bold`, `text-muted`, etc.)
 
 ## API Integration
 
