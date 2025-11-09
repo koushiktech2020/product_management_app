@@ -131,7 +131,10 @@ const ProductList: React.FC = () => {
       <div className="row">
         {products.map((product) => (
           <div key={product._id} className="col-md-6 col-lg-4 mb-4">
-            <div className="card h-100 shadow-sm">
+            <div
+              className="card h-100 border-secondary"
+              style={{ boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}
+            >
               <div className="card-body d-flex flex-column">
                 <h5 className="card-title">{product.name}</h5>
                 <p className="card-text text-muted">
@@ -142,6 +145,17 @@ const ProductList: React.FC = () => {
                   <h6 className="text-success">
                     ₹{product.price.toLocaleString()}
                   </h6>
+                  <p className="text-primary mb-1">
+                    <i
+                      className="material-icons"
+                      style={{ fontSize: "16px", verticalAlign: "middle" }}
+                    >
+                      inventory
+                    </i>
+                    <span className="ms-1 fw-medium">
+                      Quantity: {product.quantity}
+                    </span>
+                  </p>
                   <small className="text-muted">
                     Created: {new Date(product.createdAt).toLocaleDateString()}
                   </small>

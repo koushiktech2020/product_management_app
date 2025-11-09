@@ -199,6 +199,27 @@ All buttons throughout the application use consistent, modern styling:
 - **Visual Feedback**: Immediate response to user interactions
 - **Accessibility**: Proper ARIA labels and keyboard navigation
 
+### Product Card Design
+
+Beautiful product cards with refined styling and comprehensive information display:
+
+#### Card Layout & Styling
+
+- **Secondary Border**: Elegant border using Bootstrap's secondary color
+- **Subtle Shadow**: Custom soft shadow (`0 2px 8px rgba(0, 0, 0, 0.1)`) for depth without being overpowering
+- **Responsive Grid**: Cards adapt beautifully across different screen sizes
+- **Equal Height**: All cards maintain consistent height for visual harmony
+
+#### Information Display
+
+- **Product Name**: Prominent title display
+- **Creator Info**: Shows who created the product
+- **Description**: Full product description with flexible layout
+- **Price**: Formatted price display with currency symbol
+- **Quantity**: Inventory quantity with inventory icon
+- **Creation Date**: Timestamp of when product was added
+- **Action Buttons**: Edit and Delete buttons with hover effects
+
 ### Form Headers
 
 Dynamic offcanvas headers with context-aware styling:
@@ -528,6 +549,13 @@ const fetchWithRetry = async () => {
 ```
 
 ## Recent Updates
+
+### v1.0.2 - UI Enhancements & Quantity Display
+
+- **Quantity Display**: Added quantity information to product cards with inventory icon
+- **Enhanced Product Cards**: Beautiful secondary border and refined shadow styling
+- **Improved Card Layout**: Better visual hierarchy with comprehensive product information display
+- **Icon Integration**: Added inventory icon for quantity display using Material Icons
 
 ### v1.0.1 - Form Enhancements & Data Model Updates
 
