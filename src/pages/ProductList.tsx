@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { productsAPI } from "../services/api";
 import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
 import type { Product, ProductFilters } from "../types/api";
@@ -81,29 +81,52 @@ const ProductList: React.FC = () => {
     fetchProducts(undefined);
   };
 
-  const fetchProducts = async (filters?: ProductFilters) => {
-    try {
-      setLoading(true);
-      const result = await productsAPI.getAll(
-        PRODUCTS_ENDPOINTS.BASE,
-        filters || undefined
-      );
+  // Utility function to filter out empty/null/undefined values
+  const cleanFilters = useCallback(
+    (filters: ProductFilters): Partial<ProductFilters> => {
+      const cleaned: Partial<ProductFilters> = {};
 
-      if (result.success && result.data) {
-        const { data } = result.data;
-        setProducts(data);
+      Object.entries(filters).forEach(([key, value]) => {
+        // Only include values that are not empty strings, null, or undefined
+        if (value !== "" && value !== null && value !== undefined) {
+          cleaned[key as keyof ProductFilters] = value;
+        }
+      });
+
+      return cleaned;
+    },
+    []
+  );
+
+  const fetchProducts = useCallback(
+    async (filters?: ProductFilters) => {
+      try {
+        setLoading(true);
+        // Clean filters to remove empty/null/undefined values
+        const cleanedFilters = filters ? cleanFilters(filters) : undefined;
+
+        const result = await productsAPI.getAll(
+          PRODUCTS_ENDPOINTS.BASE,
+          cleanedFilters
+        );
+
+        if (result.success && result.data) {
+          const { data } = result.data;
+          setProducts(data);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching products:", err);
-      setError("Failed to load products. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [cleanFilters]
+  );
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   // Reusable page header component
   const PageHeader = () => (
