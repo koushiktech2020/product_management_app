@@ -52,15 +52,3 @@ body {
   width: 3rem;
   height: 3rem;
 }
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-
-  .card {
-    margin-bottom: 1rem;
-  }
-}
