@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { productsAPI } from "../services/api";
 import type { Product } from "../types/api";
 import ProductForm from "../components/ProductForm";
+import Loading from "../components/Loading";
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -59,15 +60,7 @@ const ProductList: React.FC = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="container mt-5">
-        <div className="text-center">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </div>
-    );
+    return <Loading text="Loading products..." />;
   }
 
   if (error) {
