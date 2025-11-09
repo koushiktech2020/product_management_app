@@ -84,6 +84,15 @@ const ProductList: React.FC = () => {
       <h1>Product List</h1>
       <div className="d-flex gap-2">
         <button
+          className="btn btn-outline-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
+          onClick={() => fetchProducts(currentFilters || undefined)}
+          title="Refresh products"
+        >
+          <i className="material-icons" style={{ fontSize: "20px" }}>
+            refresh
+          </i>
+        </button>
+        <button
           className="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
           data-bs-toggle="offcanvas"
           data-bs-target="#productFormOffcanvas"
