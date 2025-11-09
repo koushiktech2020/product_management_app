@@ -66,7 +66,7 @@ export interface Product {
 export interface ProductQueryParams {
   page?: number;
   limit?: number;
-  search?: string;
+  name?: string;
   category?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
@@ -76,8 +76,8 @@ export interface ProductQueryParams {
   quantity?: number;
   minQuantity?: number;
   maxQuantity?: number;
-  createdAtFrom?: string;
-  createdAtTo?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export type ProductUpdateData = Partial<ProductData>;

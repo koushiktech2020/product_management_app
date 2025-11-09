@@ -1,27 +1,33 @@
 import React from "react";
 
 interface ProductFilters {
-  search?: string;
+  name?: string;
   category?: string;
   minPrice?: number;
   maxPrice?: number;
   minQuantity?: number;
   maxQuantity?: number;
-  createdAtFrom?: string;
-  createdAtTo?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface ProductFilterProps {
   onFilter?: (filters: ProductFilters) => void;
+  filterValues?: ProductFilters;
+  onFilterChange?: (filters: ProductFilters) => void;
 }
 
-const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
+const ProductFilter: React.FC<ProductFilterProps> = ({
+  onFilter,
+  filterValues,
+  onFilterChange,
+}) => {
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
 
     const filters: ProductFilters = {
-      search: formData.get("search") as string,
+      name: formData.get("name") as string,
       category: formData.get("category") as string,
       minPrice: formData.get("minPrice")
         ? parseFloat(formData.get("minPrice") as string)
@@ -35,8 +41,8 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
       maxQuantity: formData.get("maxQuantity")
         ? parseInt(formData.get("maxQuantity") as string)
         : undefined,
-      createdAtFrom: formData.get("createdAtFrom") as string,
-      createdAtTo: formData.get("createdAtTo") as string,
+      startDate: formData.get("startDate") as string,
+      endDate: formData.get("endDate") as string,
     };
 
     if (onFilter) {
@@ -94,15 +100,19 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
           className="d-flex flex-column gap-3"
         >
           <div className="form-group">
-            <label htmlFor="search" className="form-label fw-semibold">
+            <label htmlFor="name" className="form-label fw-semibold">
               Search
             </label>
             <input
               type="text"
               className="form-control"
-              id="search"
-              name="search"
+              id="name"
+              name="name"
               placeholder="Search by name or description"
+              value={filterValues?.name || ""}
+              onChange={(e) =>
+                onFilterChange?.({ ...filterValues!, name: e.target.value })
+              }
             />
           </div>
           <div className="form-group">
@@ -115,6 +125,10 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
               id="category"
               name="category"
               placeholder="Category"
+              value={filterValues?.category || ""}
+              onChange={(e) =>
+                onFilterChange?.({ ...filterValues!, category: e.target.value })
+              }
             />
           </div>
           <div className="row g-2">
@@ -129,6 +143,15 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
                 name="minPrice"
                 placeholder="0"
                 min="0"
+                value={filterValues?.minPrice || ""}
+                onChange={(e) =>
+                  onFilterChange?.({
+                    ...filterValues!,
+                    minPrice: e.target.value
+                      ? parseFloat(e.target.value)
+                      : undefined,
+                  })
+                }
               />
             </div>
             <div className="col">
@@ -142,6 +165,15 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
                 name="maxPrice"
                 placeholder="100"
                 min="0"
+                value={filterValues?.maxPrice || ""}
+                onChange={(e) =>
+                  onFilterChange?.({
+                    ...filterValues!,
+                    maxPrice: e.target.value
+                      ? parseFloat(e.target.value)
+                      : undefined,
+                  })
+                }
               />
             </div>
           </div>
@@ -157,6 +189,15 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
                 name="minQuantity"
                 placeholder="1"
                 min="1"
+                value={filterValues?.minQuantity || ""}
+                onChange={(e) =>
+                  onFilterChange?.({
+                    ...filterValues!,
+                    minQuantity: e.target.value
+                      ? parseInt(e.target.value)
+                      : undefined,
+                  })
+                }
               />
             </div>
             <div className="col">
@@ -170,30 +211,53 @@ const ProductFilter: React.FC<ProductFilterProps> = ({ onFilter }) => {
                 name="maxQuantity"
                 placeholder="10"
                 min="1"
+                value={filterValues?.maxQuantity || ""}
+                onChange={(e) =>
+                  onFilterChange?.({
+                    ...filterValues!,
+                    maxQuantity: e.target.value
+                      ? parseInt(e.target.value)
+                      : undefined,
+                  })
+                }
               />
             </div>
           </div>
           <div className="row g-3">
             <div className="col">
-              <label htmlFor="createdAtFrom" className="form-label fw-semibold">
+              <label htmlFor="startDate" className="form-label fw-semibold">
                 Created From
               </label>
               <input
                 type="date"
                 className="form-control"
-                id="createdAtFrom"
-                name="createdAtFrom"
+                id="startDate"
+                name="startDate"
+                value={filterValues?.startDate || ""}
+                onChange={(e) =>
+                  onFilterChange?.({
+                    ...filterValues!,
+                    startDate: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="col">
-              <label htmlFor="createdAtTo" className="form-label fw-semibold">
+              <label htmlFor="endDate" className="form-label fw-semibold">
                 Created To
               </label>
               <input
                 type="date"
                 className="form-control"
-                id="createdAtTo"
-                name="createdAtTo"
+                id="endDate"
+                name="endDate"
+                value={filterValues?.endDate || ""}
+                onChange={(e) =>
+                  onFilterChange?.({
+                    ...filterValues!,
+                    endDate: e.target.value,
+                  })
+                }
               />
             </div>
           </div>

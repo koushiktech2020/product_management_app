@@ -7,14 +7,14 @@ import Loading from "../components/Loading";
 import EmptyState from "../components/EmptyState";
 
 interface ProductFilters {
-  search?: string;
+  name?: string;
   category?: string;
   minPrice?: number;
   maxPrice?: number;
   minQuantity?: number;
   maxQuantity?: number;
-  createdAtFrom?: string;
-  createdAtTo?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 const ProductList: React.FC = () => {
@@ -22,6 +22,16 @@ const ProductList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [productId, setProductId] = useState<string | null>(null);
+  const [filterValues, setFilterValues] = useState<ProductFilters>({
+    name: "",
+    category: "",
+    minPrice: undefined,
+    maxPrice: undefined,
+    minQuantity: undefined,
+    maxQuantity: undefined,
+    startDate: "",
+    endDate: "",
+  });
   const [currentFilters, setCurrentFilters] = useState<ProductFilters | null>(
     null
   );
@@ -57,6 +67,28 @@ const ProductList: React.FC = () => {
     fetchProducts(filters);
   };
 
+  // Handler for filter value changes
+  const handleFilterChange = (newFilters: ProductFilters) => {
+    setFilterValues(newFilters);
+  };
+
+  // Handler for refresh - reset all filters
+  const handleRefresh = () => {
+    const resetFilters = {
+      name: "",
+      category: "",
+      minPrice: undefined,
+      maxPrice: undefined,
+      minQuantity: undefined,
+      maxQuantity: undefined,
+      startDate: "",
+      endDate: "",
+    };
+    setFilterValues(resetFilters);
+    setCurrentFilters(null);
+    fetchProducts(undefined);
+  };
+
   const fetchProducts = async (filters?: ProductFilters) => {
     try {
       setLoading(true);
@@ -85,7 +117,7 @@ const ProductList: React.FC = () => {
       <div className="d-flex gap-2">
         <button
           className="btn btn-outline-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
-          onClick={() => fetchProducts(currentFilters || undefined)}
+          onClick={handleRefresh}
           title="Refresh products"
         >
           <i className="material-icons" style={{ fontSize: "20px" }}>
@@ -301,7 +333,11 @@ const ProductList: React.FC = () => {
         setProductId={setProductId}
         afterClose={handleAfterClose}
       />
-      <ProductFilter onFilter={handleFilter} />
+      <ProductFilter
+        onFilter={handleFilter}
+        filterValues={filterValues}
+        onFilterChange={handleFilterChange}
+      />
     </div>
   );
 };
