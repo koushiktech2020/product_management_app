@@ -4,20 +4,27 @@ import type {
   ProductQueryParams,
   ProductUpdateData,
 } from '../types/api';
+import { PRODUCTS_ENDPOINTS } from './endpoints';
 
-// Product API functions (all require authentication)
+// Product API functions with endpoint parameters
 export const productsAPI = {
-  create: (data: ProductData) => http.post('/products', data),
+  create: (data: ProductData, endpoint: string = PRODUCTS_ENDPOINTS.BASE) =>
+    http.post(endpoint, data),
 
-  getAll: (params?: ProductQueryParams) => http.get('/products', { params }),
+  getAll: (params?: ProductQueryParams, endpoint: string = PRODUCTS_ENDPOINTS.BASE) =>
+    http.get(endpoint, { params }),
 
-  getStats: () => http.get('/products/stats'),
+  getStats: (endpoint: string = PRODUCTS_ENDPOINTS.STATS) =>
+    http.get(endpoint),
 
-  getById: (id: string) => http.get(`/products/${id}`),
+  getById: (id: string, endpointFn: (id: string) => string = PRODUCTS_ENDPOINTS.BY_ID) =>
+    http.get(endpointFn(id)),
 
-  update: (id: string, data: ProductUpdateData) => http.put(`/products/${id}`, data),
+  update: (id: string, data: ProductUpdateData, endpointFn: (id: string) => string = PRODUCTS_ENDPOINTS.BY_ID) =>
+    http.put(endpointFn(id), data),
 
-  delete: (id: string) => http.delete(`/products/${id}`),
+  delete: (id: string, endpointFn: (id: string) => string = PRODUCTS_ENDPOINTS.BY_ID) =>
+    http.delete(endpointFn(id)),
 };
 
 export default productsAPI;

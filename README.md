@@ -88,8 +88,12 @@ src/
 ├── services/
 │   ├── api.ts          # Backward compatibility exports (used by existing components)
 │   ├── http.ts         # Axios configuration with interceptors
-│   ├── auth.ts         # Authentication API functions
-│   └── products.ts     # Product management API functions
+│   ├── auth.ts         # Authentication API functions with endpoint parameters
+│   ├── products.ts     # Product management API functions with endpoint parameters
+│   └── endpoints/
+│       ├── index.ts    # Endpoint exports
+│       ├── auth.ts     # Authentication endpoint constants
+│       └── products.ts # Product endpoint constants
 ├── components/
 │   ├── Layout.tsx       # Layout component (wraps pages with Navbar)
 │   ├── Loading.tsx      # Reusable loading spinner component
@@ -186,6 +190,32 @@ import { productsAPI } from "@/services/products";
 
 // Or use the barrel export
 import { authAPI, productsAPI } from "@/services";
+```
+
+## Endpoint Management
+
+The application uses a centralized endpoint management system for better maintainability:
+
+### Endpoint Constants
+
+- **Auth Endpoints** (`services/endpoints/auth.ts`): All authentication-related API paths
+- **Product Endpoints** (`services/endpoints/products.ts`): All product-related API paths
+
+### Benefits
+
+- **Centralized Management**: All endpoints in one place for easy updates
+- **Type Safety**: TypeScript types for endpoint validation
+- **Flexibility**: Service functions accept endpoint parameters for customization
+- **Maintainability**: Easy to change API versions or base paths
+
+### Usage Example
+
+```typescript
+// Default usage (uses predefined endpoints)
+authAPI.login(credentials);
+
+// Custom endpoint (for testing or different environments)
+authAPI.login(credentials, "/custom/auth/login");
 ```
 
 ## Contributing
