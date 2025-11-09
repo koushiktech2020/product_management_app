@@ -1,11 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { productsAPI } from "../services/api";
 import type { Product } from "../types/api";
+import ProductForm from "../components/ProductForm";
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+
+  const handleAddProduct = () => {
+    setEditingProduct(null);
+    setIsFormOpen(true);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setIsFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setIsFormOpen(false);
+    setEditingProduct(null);
+  };
+
+  const handleFormSuccess = async () => {
+    // Refresh the products list
+    try {
+      const result = await productsAPI.getAll();
+      if (result.success && result.data) {
+        const { data } = result.data;
+        setProducts(data);
+      }
+    } catch (err) {
+      console.error("Error refreshing products:", err);
+    }
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -60,7 +91,10 @@ const ProductList: React.FC = () => {
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>Product List</h1>
-        <button className="btn btn-primary">Add New Product</button>
+        <button className="btn btn-primary" onClick={handleAddProduct}>
+          <i className="bi bi-plus-circle me-2"></i>
+          Add New Product
+        </button>
       </div>
 
       <div className="row">
@@ -81,10 +115,15 @@ const ProductList: React.FC = () => {
                     Created: {new Date(product.createdAt).toLocaleDateString()}
                   </small>
                   <div className="d-flex gap-2 mt-2">
-                    <button className="btn btn-outline-primary btn-sm">
+                    <button
+                      className="btn btn-outline-primary btn-sm"
+                      onClick={() => handleEditProduct(product)}
+                    >
+                      <i className="bi bi-pencil me-1"></i>
                       Edit
                     </button>
                     <button className="btn btn-outline-danger btn-sm">
+                      <i className="bi bi-trash me-1"></i>
                       Delete
                     </button>
                   </div>
@@ -99,6 +138,20 @@ const ProductList: React.FC = () => {
         <div className="text-center mt-5">
           <p className="text-muted">No products found.</p>
         </div>
+      )}
+
+      <ProductForm
+        isOpen={isFormOpen}
+        onClose={handleFormClose}
+        onSuccess={handleFormSuccess}
+        product={editingProduct}
+      />
+
+      {isFormOpen && (
+        <div
+          className="offcanvas-backdrop show"
+          onClick={handleFormClose}
+        ></div>
       )}
     </div>
   );

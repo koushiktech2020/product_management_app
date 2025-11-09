@@ -52,6 +52,8 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  category?: string; // Optional for backward compatibility
+  stock?: number; // Optional for backward compatibility
   createdBy: {
     _id: string;
     name: string;
