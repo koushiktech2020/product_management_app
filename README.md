@@ -6,7 +6,7 @@ A modern React-based product management application built with TypeScript and Vi
 
 - **Enhanced User Authentication**: Login/Register with secure API integration using user ID from server responses
 - User logout functionality with API integration
-- **Advanced Product Filtering**: Real-time controlled filtering with useState management
+- **Advanced Product Filtering**: Real-time controlled filtering with useState management and dynamic filter cleaning
 - **Complete CRUD Operations**: Create, Read, Update, Delete products with real-time UI updates
 - **Streamlined Component Architecture**: Clean prop-based communication between ProductList and ProductForm components
 - **Beautiful UI Components**: Enhanced buttons with hover effects, gradients, and modern styling
@@ -14,6 +14,8 @@ A modern React-based product management application built with TypeScript and Vi
 - **Form Validation**: Comprehensive client-side validation with user-friendly error messages
 - **Quantity Management**: Track product inventory with quantity field
 - **Refresh Functionality**: Reset all filters and show all products with one click
+- **Dynamic Filter Cleaning**: Automatically removes empty/null/undefined filter values before API calls
+- **Performance Optimization**: useCallback implementation prevents unnecessary re-renders
 - Protected routes with robust authentication checks
 - API integration with backend for authentication and product management
 - Responsive design with Bootstrap 5 and Google Material Icons
@@ -384,6 +386,23 @@ const handleFilterChange = (newFilters: ProductFilters) => {
 };
 ```
 
+#### Performance Optimization with useCallback
+
+```typescript
+// useCallback prevents unnecessary re-renders
+const fetchProducts = useCallback(
+  async (filters?: ProductFilters) => {
+    // Function implementation with filter cleaning
+  },
+  [cleanFilters]
+);
+
+// useEffect with proper dependencies
+useEffect(() => {
+  fetchProducts();
+}, [fetchProducts]); // Includes fetchProducts in dependencies
+```
+
 #### Refresh Functionality
 
 ```typescript
@@ -411,6 +430,66 @@ const handleRefresh = () => {
 - **Reset on Refresh**: Refresh button clears all filters and shows all products
 - **State Persistence**: Filter values persist until manually reset
 - **Flexible Filtering**: Mix and match any combination of filters
+- **Dynamic Filter Cleaning**: Empty, null, and undefined values are automatically filtered out before API calls
+- **Performance Optimized**: useCallback prevents unnecessary re-renders during filtering
+
+### Dynamic Filter Cleaning
+
+The application includes intelligent filter cleaning that optimizes API calls by removing empty values:
+
+#### cleanFilters Utility Function
+
+```typescript
+// Utility function to filter out empty/null/undefined values
+const cleanFilters = useCallback(
+  (filters: ProductFilters): Partial<ProductFilters> => {
+    const cleaned: Partial<ProductFilters> = {};
+
+    Object.entries(filters).forEach(([key, value]) => {
+      // Only include values that are not empty strings, null, or undefined
+      if (value !== "" && value !== null && value !== undefined) {
+        cleaned[key as keyof ProductFilters] = value;
+      }
+    });
+
+    return cleaned;
+  },
+  []
+);
+```
+
+#### Benefits
+
+- **API Efficiency**: Only sends relevant filter parameters to the backend
+- **Reduced Payload**: Smaller request payloads improve performance
+- **Clean URLs**: Query parameters only include active filters
+- **Better UX**: No unnecessary API calls with empty filter values
+
+#### Performance Optimization
+
+```typescript
+// Wrapped with useCallback to prevent infinite re-renders
+const fetchProducts = useCallback(
+  async (filters?: ProductFilters) => {
+    try {
+      setLoading(true);
+      // Clean filters to remove empty/null/undefined values
+      const cleanedFilters = filters ? cleanFilters(filters) : undefined;
+
+      const result = await productsAPI.getAll(
+        PRODUCTS_ENDPOINTS.BASE,
+        cleanedFilters
+      );
+      // ... rest of the function
+    } catch (err) {
+      // Error handling
+    } finally {
+      setLoading(false);
+    }
+  },
+  [cleanFilters] // Dependency array includes cleanFilters
+);
+```
 
 ### UI Features
 
@@ -419,6 +498,8 @@ const handleRefresh = () => {
 - **Apply Button**: "Apply Filter" button executes the current filter combination
 - **Reset Button**: Form reset button clears all filter inputs
 - **Visual Feedback**: Real-time updates show current filter state
+- **Smart Empty State**: Shows "No Matching Products" with "Clear Filters" button when filters are applied
+- **Persistent Filter Panel**: Filter offcanvas stays open after applying filters for easy adjustments
 
 ## Product Data Structure
 

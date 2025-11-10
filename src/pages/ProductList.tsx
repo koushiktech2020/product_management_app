@@ -327,19 +327,13 @@ const ProductList: React.FC = () => {
 
       {products.length === 0 && (
         <EmptyState
-          title="No Products Found"
-          description="You haven't added any products yet. Start by creating your first product to get started."
-          icon="inventory_2"
+          title="No Matching Products"
+          description="Sorry, we couldn't find any products matching your criteria."
+          icon="search"
           actionButton={{
-            text: "Add Your First Product",
+            text: "Clear Filters",
             onClick: () => {
-              // Trigger the offcanvas to open
-              const button = document.querySelector(
-                '[data-bs-target="#productFormOffcanvas"]'
-              ) as HTMLButtonElement;
-              if (button) {
-                button.click();
-              }
+              handleRefresh();
             },
             variant: "primary",
           }}

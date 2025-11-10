@@ -38,16 +38,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
     if (onFilter) {
       onFilter(filters);
     }
-
-    // Close the offcanvas
-    const offcanvas = document.getElementById("productFilterOffcanvas");
-    if (offcanvas) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const bsOffcanvas = (window as any).bootstrap.Offcanvas.getInstance(
-        offcanvas
-      );
-      bsOffcanvas?.hide();
-    }
   };
 
   const handleReset = () => {
@@ -66,7 +56,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
       id="productFilterOffcanvas"
       aria-labelledby="productFilterOffcanvasLabel"
       data-bs-scroll="true"
-      data-bs-backdrop="static"
     >
       <div className="offcanvas-header bg-primary text-white shadow-sm">
         <h5
