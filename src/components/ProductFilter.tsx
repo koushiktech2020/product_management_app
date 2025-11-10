@@ -73,165 +73,167 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
       </div>
       <div className="offcanvas-body p-4">
         {/* Filter Form */}
-        <form
-          onSubmit={handleFilterSubmit}
-          className="d-flex flex-column gap-3"
-        >
-          <div className="form-group">
-            <label htmlFor="name" className="form-label fw-semibold">
-              Search
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="name"
-              name="name"
-              placeholder="Search by name or description"
-              value={filterValues?.name || ""}
-              onChange={(e) =>
-                onFilterChange?.({ ...filterValues!, name: e.target.value })
-              }
-            />
-          </div>
-          <div className="row g-2">
-            <div className="col">
-              <label htmlFor="minPrice" className="form-label fw-semibold">
-                Min Price
+        <div className="p-3 p-md-4 border border-gray-300 rounded-10 shadow-sm rounded-3">
+          <form
+            onSubmit={handleFilterSubmit}
+            className="d-flex flex-column h-100 gap-3"
+          >
+            <div className="form-group">
+              <label htmlFor="name" className="form-label fw-semibold">
+                Search
               </label>
               <input
-                type="number"
+                type="text"
                 className="form-control"
-                id="minPrice"
-                name="minPrice"
-                placeholder="0"
-                min="0"
-                value={filterValues?.minPrice || ""}
+                id="name"
+                name="name"
+                placeholder="Search by name or description"
+                value={filterValues?.name || ""}
                 onChange={(e) =>
-                  onFilterChange?.({
-                    ...filterValues!,
-                    minPrice: e.target.value
-                      ? parseFloat(e.target.value)
-                      : undefined,
-                  })
+                  onFilterChange?.({ ...filterValues!, name: e.target.value })
                 }
               />
             </div>
-            <div className="col">
-              <label htmlFor="maxPrice" className="form-label fw-semibold">
-                Max Price
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                id="maxPrice"
-                name="maxPrice"
-                placeholder="100"
-                min="0"
-                value={filterValues?.maxPrice || ""}
-                onChange={(e) =>
-                  onFilterChange?.({
-                    ...filterValues!,
-                    maxPrice: e.target.value
-                      ? parseFloat(e.target.value)
-                      : undefined,
-                  })
-                }
-              />
+            <div className="row g-2">
+              <div className="col">
+                <label htmlFor="minPrice" className="form-label fw-semibold">
+                  Min Price
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="minPrice"
+                  name="minPrice"
+                  placeholder="0"
+                  min="0"
+                  value={filterValues?.minPrice || ""}
+                  onChange={(e) =>
+                    onFilterChange?.({
+                      ...filterValues!,
+                      minPrice: e.target.value
+                        ? parseFloat(e.target.value)
+                        : undefined,
+                    })
+                  }
+                />
+              </div>
+              <div className="col">
+                <label htmlFor="maxPrice" className="form-label fw-semibold">
+                  Max Price
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="maxPrice"
+                  name="maxPrice"
+                  placeholder="100"
+                  min="0"
+                  value={filterValues?.maxPrice || ""}
+                  onChange={(e) =>
+                    onFilterChange?.({
+                      ...filterValues!,
+                      maxPrice: e.target.value
+                        ? parseFloat(e.target.value)
+                        : undefined,
+                    })
+                  }
+                />
+              </div>
             </div>
-          </div>
-          <div className="row g-2">
-            <div className="col">
-              <label htmlFor="minQuantity" className="form-label fw-semibold">
-                Min Quantity
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                id="minQuantity"
-                name="minQuantity"
-                placeholder="1"
-                min="1"
-                value={filterValues?.minQuantity || ""}
-                onChange={(e) =>
-                  onFilterChange?.({
-                    ...filterValues!,
-                    minQuantity: e.target.value
-                      ? parseInt(e.target.value)
-                      : undefined,
-                  })
-                }
-              />
+            <div className="row g-2">
+              <div className="col">
+                <label htmlFor="minQuantity" className="form-label fw-semibold">
+                  Min Quantity
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="minQuantity"
+                  name="minQuantity"
+                  placeholder="1"
+                  min="1"
+                  value={filterValues?.minQuantity || ""}
+                  onChange={(e) =>
+                    onFilterChange?.({
+                      ...filterValues!,
+                      minQuantity: e.target.value
+                        ? parseInt(e.target.value)
+                        : undefined,
+                    })
+                  }
+                />
+              </div>
+              <div className="col">
+                <label htmlFor="maxQuantity" className="form-label fw-semibold">
+                  Max Quantity
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="maxQuantity"
+                  name="maxQuantity"
+                  placeholder="10"
+                  min="1"
+                  value={filterValues?.maxQuantity || ""}
+                  onChange={(e) =>
+                    onFilterChange?.({
+                      ...filterValues!,
+                      maxQuantity: e.target.value
+                        ? parseInt(e.target.value)
+                        : undefined,
+                    })
+                  }
+                />
+              </div>
             </div>
-            <div className="col">
-              <label htmlFor="maxQuantity" className="form-label fw-semibold">
-                Max Quantity
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                id="maxQuantity"
-                name="maxQuantity"
-                placeholder="10"
-                min="1"
-                value={filterValues?.maxQuantity || ""}
-                onChange={(e) =>
-                  onFilterChange?.({
-                    ...filterValues!,
-                    maxQuantity: e.target.value
-                      ? parseInt(e.target.value)
-                      : undefined,
-                  })
-                }
-              />
+            <div className="row g-3">
+              <div className="col">
+                <label htmlFor="startDate" className="form-label fw-semibold">
+                  Created From
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="startDate"
+                  name="startDate"
+                  value={filterValues?.startDate || ""}
+                  onChange={(e) =>
+                    onFilterChange?.({
+                      ...filterValues!,
+                      startDate: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="col">
+                <label htmlFor="endDate" className="form-label fw-semibold">
+                  Created To
+                </label>
+                <input
+                  type="date"
+                  className="form-control"
+                  id="endDate"
+                  name="endDate"
+                  value={filterValues?.endDate || ""}
+                  onChange={(e) =>
+                    onFilterChange?.({
+                      ...filterValues!,
+                      endDate: e.target.value,
+                    })
+                  }
+                />
+              </div>
             </div>
-          </div>
-          <div className="row g-3">
-            <div className="col">
-              <label htmlFor="startDate" className="form-label fw-semibold">
-                Created From
-              </label>
-              <input
-                type="date"
-                className="form-control"
-                id="startDate"
-                name="startDate"
-                value={filterValues?.startDate || ""}
-                onChange={(e) =>
-                  onFilterChange?.({
-                    ...filterValues!,
-                    startDate: e.target.value,
-                  })
-                }
-              />
+            <div className="mt-3">
+              <button
+                type="submit"
+                className="btn btn-primary rounded-pill px-4 fw-semibold w-100"
+              >
+                Apply Filter
+              </button>
             </div>
-            <div className="col">
-              <label htmlFor="endDate" className="form-label fw-semibold">
-                Created To
-              </label>
-              <input
-                type="date"
-                className="form-control"
-                id="endDate"
-                name="endDate"
-                value={filterValues?.endDate || ""}
-                onChange={(e) =>
-                  onFilterChange?.({
-                    ...filterValues!,
-                    endDate: e.target.value,
-                  })
-                }
-              />
-            </div>
-          </div>
-          <div className="mt-3">
-            <button
-              type="submit"
-              className="btn btn-primary rounded-pill px-4 fw-semibold w-100"
-            >
-              Apply Filter
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
