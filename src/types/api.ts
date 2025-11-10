@@ -82,7 +82,6 @@ export interface ProductQueryParams {
 
 export interface ProductFilters {
   name?: string;
-  category?: string;
   minPrice?: number;
   maxPrice?: number;
   minQuantity?: number;

@@ -18,7 +18,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
 
     const filters: ProductFilters = {
       name: formData.get("name") as string,
-      category: formData.get("category") as string,
       minPrice: formData.get("minPrice")
         ? parseFloat(formData.get("minPrice") as string)
         : undefined,
@@ -91,22 +90,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
               value={filterValues?.name || ""}
               onChange={(e) =>
                 onFilterChange?.({ ...filterValues!, name: e.target.value })
-              }
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="category" className="form-label fw-semibold">
-              Category
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="category"
-              name="category"
-              placeholder="Category"
-              value={filterValues?.category || ""}
-              onChange={(e) =>
-                onFilterChange?.({ ...filterValues!, category: e.target.value })
               }
             />
           </div>

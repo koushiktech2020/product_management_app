@@ -314,7 +314,6 @@ interface ProductQueryParams {
   page?: number; // Pagination page number
   limit?: number; // Number of items per page
   name?: string; // Search by product name (partial match)
-  category?: string; // Filter by product category
   minPrice?: number; // Minimum price filter
   maxPrice?: number; // Maximum price filter
   minQuantity?: number; // Minimum quantity filter
@@ -337,10 +336,10 @@ GET /products?minPrice=100&maxPrice=1000
 GET /products?startDate=2024-01-01&endDate=2024-12-31
 
 # Combined filters
-GET /products?name=phone&category=electronics&minPrice=200&maxPrice=800&startDate=2024-01-01
+GET /products?name=phone&minPrice=200&maxPrice=800&startDate=2024-01-01
 
 # Pagination with filters
-GET /products?page=1&limit=10&category=electronics&minQuantity=5
+GET /products?page=1&limit=10&minQuantity=5
 ```
 
 ## Advanced Filtering System
@@ -353,13 +352,12 @@ The application features a sophisticated product filtering system with real-time
 
 - **Controlled Inputs**: All filter fields use React useState for real-time updates
 - **Offcanvas UI**: Beautiful slide-out filter panel with Bootstrap styling
-- **Multiple Filter Types**: Text search, category, price range, quantity range, date range
+- **Multiple Filter Types**: Text search, price range, quantity range, date range
 - **Responsive Design**: Mobile-friendly filter interface
 
 #### Filter Fields
 
 - **Name Search**: Real-time search by product name
-- **Category Filter**: Dropdown/text input for category filtering
 - **Price Range**: Min/Max price inputs with number validation
 - **Quantity Range**: Min/Max quantity inputs with number validation
 - **Date Range**: Start/End date pickers for creation date filtering
@@ -372,7 +370,6 @@ The application features a sophisticated product filtering system with real-time
 // Filter state management in ProductList component
 const [filterValues, setFilterValues] = useState<ProductFilters>({
   name: "",
-  category: "",
   minPrice: undefined,
   maxPrice: undefined,
   minQuantity: undefined,
@@ -409,7 +406,6 @@ useEffect(() => {
 const handleRefresh = () => {
   const resetFilters = {
     name: "",
-    category: "",
     minPrice: undefined,
     maxPrice: undefined,
     minQuantity: undefined,
@@ -612,7 +608,7 @@ productsAPI.getAll();
 // With query parameters for filtering
 productsAPI.getAll(
   { page: 1, limit: 10 }, // Standard query params
-  { name: "laptop", category: "electronics", price_min: 500 } // Additional filters
+  { name: "laptop", minPrice: 500 } // Additional filters
 );
 
 // Custom endpoint with params (for testing)
@@ -806,7 +802,7 @@ const products = await productsAPI.getAll(PRODUCTS_ENDPOINTS.BASE, filters);
 ### v1.0.4 - Advanced Filtering System & useState Controls
 
 - **useState Controlled Filters**: Converted all filter inputs to controlled components with real-time updates
-- **Advanced Filtering**: Added comprehensive filtering by name, category, price range, quantity range, and date range
+- **Advanced Filtering**: Added comprehensive filtering by name, price range, quantity range, and date range
 - **Refresh Button**: Added refresh functionality that resets all filters and shows all products
 - **Real-time Filter Updates**: Filter values update immediately as user types
 - **Improved Filter UI**: Enhanced offcanvas filter panel with better user experience

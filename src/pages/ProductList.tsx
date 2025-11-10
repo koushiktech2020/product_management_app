@@ -14,7 +14,6 @@ const ProductList: React.FC = () => {
   const [productId, setProductId] = useState<string | null>(null);
   const [filterValues, setFilterValues] = useState<ProductFilters>({
     name: "",
-    category: "",
     minPrice: undefined,
     maxPrice: undefined,
     minQuantity: undefined,
@@ -68,7 +67,6 @@ const ProductList: React.FC = () => {
   const handleRefresh = () => {
     const resetFilters = {
       name: "",
-      category: "",
       minPrice: undefined,
       maxPrice: undefined,
       minQuantity: undefined,
