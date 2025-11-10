@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { productsAPI } from "../services/api";
 import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
-import type { Product, ProductFilters } from "../types/api";
+import type { Product } from "../types/api";
 import ProductForm from "../components/ProductForm";
 import ProductFilter from "../components/ProductFilter";
 import Loading from "../components/Loading";
@@ -12,18 +12,7 @@ const ProductList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [productId, setProductId] = useState<string | null>(null);
-  const [filterValues, setFilterValues] = useState<ProductFilters>({
-    name: "",
-    minPrice: undefined,
-    maxPrice: undefined,
-    minQuantity: undefined,
-    maxQuantity: undefined,
-    startDate: "",
-    endDate: "",
-  });
-  const [currentFilters, setCurrentFilters] = useState<ProductFilters | null>(
-    null
-  );
+  const [resetTrigger, setResetTrigger] = useState(0);
 
   const handleEditProduct = (product: Product) => {
     setProductId(product._id);
@@ -36,8 +25,10 @@ const ProductList: React.FC = () => {
           PRODUCTS_ENDPOINTS.BY_ID(product._id)
         );
         if (result.success) {
-          // Refresh the products list after successful deletion with current filters
-          fetchProducts(currentFilters || undefined);
+          // Refresh the products list after successful deletion
+          // Since ProductFilter now manages fetching, we need to trigger a refetch
+          // For now, we'll reload all products
+          fetchProducts();
         } else {
           alert("Failed to delete product. Please try again.");
         }
@@ -52,75 +43,27 @@ const ProductList: React.FC = () => {
     fetchProducts();
   };
 
-  // Handler for filter application
-  const handleFilter = (filters: ProductFilters) => {
-    setCurrentFilters(filters);
-    fetchProducts(filters);
-  };
-
-  // Handler for filter value changes
-  const handleFilterChange = (newFilters: ProductFilters) => {
-    setFilterValues(newFilters);
-  };
-
-  // Handler for refresh - reset all filters
+  // Handler for refresh - trigger reset in ProductFilter
   const handleRefresh = () => {
-    const resetFilters = {
-      name: "",
-      minPrice: undefined,
-      maxPrice: undefined,
-      minQuantity: undefined,
-      maxQuantity: undefined,
-      startDate: "",
-      endDate: "",
-    };
-    setFilterValues(resetFilters);
-    setCurrentFilters(null);
-    fetchProducts(undefined);
+    setResetTrigger((prev) => prev + 1);
   };
 
-  // Utility function to filter out empty/null/undefined values
-  const cleanFilters = useCallback(
-    (filters: ProductFilters): Partial<ProductFilters> => {
-      const cleaned: Partial<ProductFilters> = {};
+  const fetchProducts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const result = await productsAPI.getAll(PRODUCTS_ENDPOINTS.BASE);
 
-      Object.entries(filters).forEach(([key, value]) => {
-        // Only include values that are not empty strings, null, or undefined
-        if (value !== "" && value !== null && value !== undefined) {
-          cleaned[key as keyof ProductFilters] = value;
-        }
-      });
-
-      return cleaned;
-    },
-    []
-  );
-
-  const fetchProducts = useCallback(
-    async (filters?: ProductFilters) => {
-      try {
-        setLoading(true);
-        // Clean filters to remove empty/null/undefined values
-        const cleanedFilters = filters ? cleanFilters(filters) : undefined;
-
-        const result = await productsAPI.getAll(
-          PRODUCTS_ENDPOINTS.BASE,
-          cleanedFilters
-        );
-
-        if (result.success && result.data) {
-          const { data } = result.data;
-          setProducts(data);
-        }
-      } catch (err) {
-        console.error("Error fetching products:", err);
-        setError("Failed to load products. Please try again.");
-      } finally {
-        setLoading(false);
+      if (result.success && result.data) {
+        const { data } = result.data;
+        setProducts(data);
       }
-    },
-    [cleanFilters]
-  );
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setError("Failed to load products. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -180,7 +123,7 @@ const ProductList: React.FC = () => {
           <p>{error}</p>
           <button
             className="btn btn-outline-danger rounded-pill fw-medium px-3 py-2 transition-all"
-            onClick={() => fetchProducts(currentFilters || undefined)}
+            onClick={() => handleRefresh()}
             style={{
               border: "1px solid #dc3545",
               boxShadow: "0 2px 8px rgba(220, 53, 69, 0.15)",
@@ -343,11 +286,7 @@ const ProductList: React.FC = () => {
         setProductId={setProductId}
         afterClose={handleAfterClose}
       />
-      <ProductFilter
-        onFilter={handleFilter}
-        filterValues={filterValues}
-        onFilterChange={handleFilterChange}
-      />
+      <ProductFilter setProducts={setProducts} resetTrigger={resetTrigger} />
     </div>
   );
 };

@@ -1,17 +1,65 @@
-import React from "react";
-import type { ProductFilters } from "../types/api";
+import React, { useState, useCallback } from "react";
+import type { Product, ProductFilters } from "../types/api";
+import { productsAPI } from "../services/api";
+import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
 
 interface ProductFilterProps {
-  onFilter?: (filters: ProductFilters) => void;
-  filterValues?: ProductFilters;
-  onFilterChange?: (filters: ProductFilters) => void;
+  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  resetTrigger?: number; // When this changes, trigger reset
 }
 
 const ProductFilter: React.FC<ProductFilterProps> = ({
-  onFilter,
-  filterValues,
-  onFilterChange,
+  setProducts,
+  resetTrigger,
 }) => {
+  const [filterValues, setFilterValues] = useState<ProductFilters>({
+    name: "",
+    minPrice: undefined,
+    maxPrice: undefined,
+    minQuantity: undefined,
+    maxQuantity: undefined,
+    startDate: "",
+    endDate: "",
+  });
+
+  // Utility function to filter out empty/null/undefined values
+  const cleanFilters = useCallback(
+    (filters: ProductFilters): Partial<ProductFilters> => {
+      const cleaned: Partial<ProductFilters> = {};
+
+      Object.entries(filters).forEach(([key, value]) => {
+        // Only include values that are not empty strings, null, or undefined
+        if (value !== "" && value !== null && value !== undefined) {
+          cleaned[key as keyof ProductFilters] = value;
+        }
+      });
+
+      return cleaned;
+    },
+    []
+  );
+
+  const fetchProducts = useCallback(
+    async (filters?: ProductFilters) => {
+      try {
+        // Clean filters to remove empty/null/undefined values
+        const cleanedFilters = filters ? cleanFilters(filters) : undefined;
+
+        const result = await productsAPI.getAll(
+          PRODUCTS_ENDPOINTS.BASE,
+          cleanedFilters
+        );
+
+        if (result.success && result.data) {
+          const { data } = result.data;
+          setProducts(data);
+        }
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      }
+    },
+    [cleanFilters, setProducts]
+  );
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -34,19 +82,34 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
       endDate: formData.get("endDate") as string,
     };
 
-    if (onFilter) {
-      onFilter(filters);
-    }
+    fetchProducts(filters);
   };
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     const form = document.querySelector(
       "#productFilterOffcanvas form"
     ) as HTMLFormElement;
     if (form) {
       form.reset();
     }
-  };
+    setFilterValues({
+      name: "",
+      minPrice: undefined,
+      maxPrice: undefined,
+      minQuantity: undefined,
+      maxQuantity: undefined,
+      startDate: "",
+      endDate: "",
+    });
+    fetchProducts(undefined);
+  }, [fetchProducts]);
+
+  // Watch for reset trigger from parent
+  React.useEffect(() => {
+    if (resetTrigger && resetTrigger > 0) {
+      handleReset();
+    }
+  }, [resetTrigger, handleReset]);
 
   return (
     <div
@@ -90,7 +153,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                 placeholder="Search by name or description"
                 value={filterValues?.name || ""}
                 onChange={(e) =>
-                  onFilterChange?.({ ...filterValues!, name: e.target.value })
+                  setFilterValues({ ...filterValues!, name: e.target.value })
                 }
               />
             </div>
@@ -108,7 +171,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                   min="0"
                   value={filterValues?.minPrice || ""}
                   onChange={(e) =>
-                    onFilterChange?.({
+                    setFilterValues({
                       ...filterValues!,
                       minPrice: e.target.value
                         ? parseFloat(e.target.value)
@@ -130,7 +193,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                   min="0"
                   value={filterValues?.maxPrice || ""}
                   onChange={(e) =>
-                    onFilterChange?.({
+                    setFilterValues({
                       ...filterValues!,
                       maxPrice: e.target.value
                         ? parseFloat(e.target.value)
@@ -154,7 +217,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                   min="1"
                   value={filterValues?.minQuantity || ""}
                   onChange={(e) =>
-                    onFilterChange?.({
+                    setFilterValues({
                       ...filterValues!,
                       minQuantity: e.target.value
                         ? parseInt(e.target.value)
@@ -176,7 +239,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                   min="1"
                   value={filterValues?.maxQuantity || ""}
                   onChange={(e) =>
-                    onFilterChange?.({
+                    setFilterValues({
                       ...filterValues!,
                       maxQuantity: e.target.value
                         ? parseInt(e.target.value)
@@ -198,7 +261,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                   name="startDate"
                   value={filterValues?.startDate || ""}
                   onChange={(e) =>
-                    onFilterChange?.({
+                    setFilterValues({
                       ...filterValues!,
                       startDate: e.target.value,
                     })
@@ -216,7 +279,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
                   name="endDate"
                   value={filterValues?.endDate || ""}
                   onChange={(e) =>
-                    onFilterChange?.({
+                    setFilterValues({
                       ...filterValues!,
                       endDate: e.target.value,
                     })

@@ -170,6 +170,17 @@ const handleAfterClose = () => {
   setProductId={setProductId}
   afterClose={handleAfterClose}
 />;
+
+// ProductFilter with simplified props
+const [products, setProducts] = useState<Product[]>([]);
+const [resetTrigger, setResetTrigger] = useState(0);
+
+const handleRefresh = () => {
+  setResetTrigger((prev) => prev + 1); // Trigger filter reset
+};
+
+// Self-managing ProductFilter component
+<ProductFilter setProducts={setProducts} resetTrigger={resetTrigger} />;
 ```
 
 ## UI/UX Enhancements
@@ -350,10 +361,12 @@ The application features a sophisticated product filtering system with real-time
 
 #### ProductFilter Component
 
+- **Self-Managed State**: ProductFilter manages its own filter state internally using useState
 - **Controlled Inputs**: All filter fields use React useState for real-time updates
 - **Offcanvas UI**: Beautiful slide-out filter panel with Bootstrap styling
 - **Multiple Filter Types**: Text search, price range, quantity range, date range
 - **Responsive Design**: Mobile-friendly filter interface
+- **Parent Communication**: Uses setProducts prop to update parent component's product list
 
 #### Filter Fields
 
@@ -364,10 +377,10 @@ The application features a sophisticated product filtering system with real-time
 
 ### State Management
 
-#### useState Controlled Filtering
+#### Component-Scoped Filter State
 
-```typescript
-// Filter state management in ProductList component
+````typescript
+// ProductFilter manages its own filter state internally
 const [filterValues, setFilterValues] = useState<ProductFilters>({
   name: "",
   minPrice: undefined,
@@ -378,10 +391,16 @@ const [filterValues, setFilterValues] = useState<ProductFilters>({
   endDate: "",
 });
 
-const handleFilterChange = (newFilters: ProductFilters) => {
-  setFilterValues(newFilters); // Real-time state updates
-};
-```
+// Clean filters utility within ProductFilter
+const cleanFilters = useCallback((filters: ProductFilters): Partial<ProductFilters> => {
+  const cleaned: Partial<ProductFilters> = {};
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value !== "" && value !== null && value !== undefined) {
+      cleaned[key as keyof ProductFilters] = value;
+    }
+  });
+  return cleaned;
+}, []);
 
 #### Performance Optimization with useCallback
 
@@ -398,25 +417,24 @@ const fetchProducts = useCallback(
 useEffect(() => {
   fetchProducts();
 }, [fetchProducts]); // Includes fetchProducts in dependencies
-```
+````
 
 #### Refresh Functionality
 
 ```typescript
+// ProductList manages refresh trigger
+const [resetTrigger, setResetTrigger] = useState(0);
+
 const handleRefresh = () => {
-  const resetFilters = {
-    name: "",
-    minPrice: undefined,
-    maxPrice: undefined,
-    minQuantity: undefined,
-    maxQuantity: undefined,
-    startDate: "",
-    endDate: "",
-  };
-  setFilterValues(resetFilters); // Reset all filter fields
-  setCurrentFilters(null); // Clear applied filters
-  fetchProducts(undefined); // Fetch all products
+  setResetTrigger((prev) => prev + 1); // Increment trigger to reset filters
 };
+
+// ProductFilter watches for resetTrigger changes and resets internally
+React.useEffect(() => {
+  if (resetTrigger && resetTrigger > 0) {
+    handleReset(); // Internal reset function in ProductFilter
+  }
+}, [resetTrigger, handleReset]);
 ```
 
 ### Filter Behavior
@@ -436,7 +454,7 @@ The application includes intelligent filter cleaning that optimizes API calls by
 #### cleanFilters Utility Function
 
 ```typescript
-// Utility function to filter out empty/null/undefined values
+// Utility function within ProductFilter component to filter out empty/null/undefined values
 const cleanFilters = useCallback(
   (filters: ProductFilters): Partial<ProductFilters> => {
     const cleaned: Partial<ProductFilters> = {};
@@ -798,6 +816,16 @@ const products = await productsAPI.getAll(PRODUCTS_ENDPOINTS.BASE, filters);
 - **Better Maintainability**: Clear separation between endpoint definitions and API calls
 - **Type Safety**: Full TypeScript support with proper parameter validation
 - **Flexibility**: Easy to modify or extend endpoint usage per component
+
+### v1.0.5 - Simplified Filter Architecture
+
+- **Self-Managing ProductFilter**: ProductFilter component now manages its own filter state internally
+- **Simplified Props Interface**: Reduced from 3 complex props to 2 simple props (setProducts, resetTrigger)
+- **Component Independence**: ProductFilter handles all filtering logic, API calls, and state management
+- **Cleaner ProductList**: Removed filter-related state and handlers from ProductList component
+- **Trigger-Based Reset**: Refresh functionality now uses incrementing trigger prop instead of complex state management
+- **Maintained Performance**: Dynamic filter cleaning and useCallback optimizations preserved
+- **Better Separation of Concerns**: Each component has clear, focused responsibilities
 
 ### v1.0.4 - Advanced Filtering System & useState Controls
 
