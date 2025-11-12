@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import type { Product, ProductFilters } from "../types/api";
 import { productsAPI } from "../services/api";
 import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
@@ -14,10 +14,10 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
 }) => {
   const [filterValues, setFilterValues] = useState<ProductFilters>({
     name: "",
-    minPrice: undefined,
-    maxPrice: undefined,
-    minQuantity: undefined,
-    maxQuantity: undefined,
+    minPrice: 0,
+    maxPrice: 0,
+    minQuantity: 0,
+    maxQuantity: 0,
     startDate: "",
     endDate: "",
   });
@@ -60,26 +60,18 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
     },
     [cleanFilters, setProducts]
   );
+
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
 
     const filters: ProductFilters = {
-      name: formData.get("name") as string,
-      minPrice: formData.get("minPrice")
-        ? parseFloat(formData.get("minPrice") as string)
-        : undefined,
-      maxPrice: formData.get("maxPrice")
-        ? parseFloat(formData.get("maxPrice") as string)
-        : undefined,
-      minQuantity: formData.get("minQuantity")
-        ? parseInt(formData.get("minQuantity") as string)
-        : undefined,
-      maxQuantity: formData.get("maxQuantity")
-        ? parseInt(formData.get("maxQuantity") as string)
-        : undefined,
-      startDate: formData.get("startDate") as string,
-      endDate: formData.get("endDate") as string,
+      name: filterValues.name || undefined,
+      minPrice: filterValues.minPrice || undefined,
+      maxPrice: filterValues.maxPrice || undefined,
+      minQuantity: filterValues.minQuantity || undefined,
+      maxQuantity: filterValues.maxQuantity || undefined,
+      startDate: filterValues.startDate || undefined,
+      endDate: filterValues.endDate || undefined,
     };
 
     fetchProducts(filters);
@@ -94,10 +86,10 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
     }
     setFilterValues({
       name: "",
-      minPrice: undefined,
-      maxPrice: undefined,
-      minQuantity: undefined,
-      maxQuantity: undefined,
+      minPrice: 0,
+      maxPrice: 0,
+      minQuantity: 0,
+      maxQuantity: 0,
       startDate: "",
       endDate: "",
     });
@@ -105,7 +97,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
   }, [fetchProducts]);
 
   // Watch for reset trigger from parent
-  React.useEffect(() => {
+  useEffect(() => {
     if (resetTrigger && resetTrigger > 0) {
       handleReset();
     }
