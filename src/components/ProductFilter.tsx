@@ -135,7 +135,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
           >
             <div className="form-group">
               <label htmlFor="name" className="form-label fw-semibold">
-                Search
+                Search By Name
               </label>
               <input
                 type="text"
