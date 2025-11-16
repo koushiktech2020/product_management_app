@@ -13,6 +13,11 @@ const ProductList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [productId, setProductId] = useState<string | null>(null);
   const [resetTrigger, setResetTrigger] = useState(0);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [sortBy, setSortBy] = useState<string>("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [totalPages, setTotalPages] = useState(1);
 
   const handleEditProduct = (product: Product) => {
     setProductId(product._id);
@@ -51,11 +56,17 @@ const ProductList: React.FC = () => {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const result = await productsAPI.getAll(PRODUCTS_ENDPOINTS.BASE);
-
+      const params = {
+        page,
+        limit,
+        sortBy,
+        sortOrder,
+      };
+      const result = await productsAPI.getAll(PRODUCTS_ENDPOINTS.BASE, params);
       if (result.success && result.data) {
-        const { data } = result.data;
+        const { data, totalPages: apiTotalPages } = result.data;
         setProducts(data);
+        setTotalPages(apiTotalPages || 1);
       }
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -63,7 +74,7 @@ const ProductList: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [page, limit, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchProducts();
@@ -106,6 +117,63 @@ const ProductList: React.FC = () => {
           </i>
           <span>Filter Products</span>
         </button>
+      </div>
+    </div>
+  );
+
+  // Pagination, limit, and sorting controls UI
+  const ControlsBar = () => (
+    <div className="d-flex flex-wrap gap-3 align-items-center mb-4">
+      <div>
+        <label className="me-2 fw-semibold">Page:</label>
+        <select
+          className="form-select d-inline-block w-auto"
+          value={page}
+          onChange={(e) => setPage(Number(e.target.value))}
+        >
+          {Array.from({ length: totalPages }, (_, i) => (
+            <option key={i + 1} value={i + 1}>
+              {i + 1}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="me-2 fw-semibold">Limit:</label>
+        <select
+          className="form-select d-inline-block w-auto"
+          value={limit}
+          onChange={(e) => setLimit(Number(e.target.value))}
+        >
+          {[10, 20, 50].map((l) => (
+            <option key={l} value={l}>
+              {l}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="me-2 fw-semibold">Sort By:</label>
+        <select
+          className="form-select d-inline-block w-auto"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="createdAt">Created At</option>
+          <option value="price">Price</option>
+          <option value="name">Name</option>
+        </select>
+      </div>
+      <div>
+        <label className="me-2 fw-semibold">Order:</label>
+        <select
+          className="form-select d-inline-block w-auto"
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+        >
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
       </div>
     </div>
   );
@@ -159,6 +227,7 @@ const ProductList: React.FC = () => {
   return (
     <div className="container mt-5">
       <PageHeader />
+      <ControlsBar />
 
       <div className="row">
         {products.map((product) => (
