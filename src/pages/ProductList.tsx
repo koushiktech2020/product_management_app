@@ -99,17 +99,6 @@ const ProductList: React.FC = () => {
           </i>
         </button>
         <button
-          className="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#productFormOffcanvas"
-          aria-controls="productFormOffcanvas"
-        >
-          <i className="material-icons" style={{ fontSize: "20px" }}>
-            add_circle
-          </i>
-          <span>Add New Product</span>
-        </button>
-        <button
           className="btn btn-outline-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
           type="button"
           data-bs-toggle="offcanvas"
@@ -119,7 +108,17 @@ const ProductList: React.FC = () => {
           <i className="material-icons" style={{ fontSize: "20px" }}>
             filter_alt
           </i>
-          <span>Filter Products</span>
+        </button>
+        <button
+          className="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
+          data-bs-toggle="offcanvas"
+          data-bs-target="#productFormOffcanvas"
+          aria-controls="productFormOffcanvas"
+        >
+          <i className="material-icons" style={{ fontSize: "20px" }}>
+            add_circle
+          </i>
+          <span>Add New</span>
         </button>
       </div>
     </div>
