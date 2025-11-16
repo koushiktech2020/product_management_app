@@ -4,7 +4,7 @@ import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
 import type { Product } from "../types/api";
 import ProductForm from "../components/ProductForm";
 import ProductFilter from "../components/ProductFilter";
-import Loading from "../components/Loading";
+// import Loading from "../components/Loading";
 import EmptyState from "../components/EmptyState";
 
 const ProductList: React.FC = () => {
@@ -183,7 +183,49 @@ const ProductList: React.FC = () => {
   );
 
   if (loading) {
-    return <Loading text="Loading products..." />;
+    return (
+      <div className="container mt-5">
+        <PageHeader />
+        <ControlsBar />
+        <div className="row">
+          {[...Array(6)].map((_, idx) => (
+            <div key={idx} className="col-md-6 col-lg-4 mb-4">
+              <div
+                className="card h-100 border-secondary"
+                style={{ boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)" }}
+              >
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title placeholder-glow">
+                    <span className="placeholder col-8"></span>
+                  </h5>
+                  <p className="card-text text-muted placeholder-glow">
+                    <span className="placeholder col-6"></span>
+                  </p>
+                  <p className="card-text flex-grow-1 placeholder-glow">
+                    <span className="placeholder col-12"></span>
+                  </p>
+                  <div className="mt-auto">
+                    <h6 className="text-success placeholder-glow">
+                      <span className="placeholder col-4"></span>
+                    </h6>
+                    <p className="text-primary mb-1 placeholder-glow">
+                      <span className="placeholder col-5"></span>
+                    </p>
+                    <small className="text-muted placeholder-glow">
+                      <span className="placeholder col-6"></span>
+                    </small>
+                    <div className="d-flex gap-2 mt-2">
+                      <button className="btn btn-outline-primary disabled placeholder col-4"></button>
+                      <button className="btn btn-outline-danger disabled placeholder col-4"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (error) {
