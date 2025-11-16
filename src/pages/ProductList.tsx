@@ -14,7 +14,7 @@ const ProductList: React.FC = () => {
   const [productId, setProductId] = useState<string | null>(null);
   const [resetTrigger, setResetTrigger] = useState(0);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(6);
   const [sortBy, setSortBy] = useState<string>("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [totalPages, setTotalPages] = useState(1);
@@ -50,6 +50,10 @@ const ProductList: React.FC = () => {
 
   // Handler for refresh - trigger reset in ProductFilter
   const handleRefresh = () => {
+    setPage(1);
+    setLimit(6);
+    setSortBy("createdAt");
+    setSortOrder("desc");
     setResetTrigger((prev) => prev + 1);
   };
 
@@ -145,7 +149,7 @@ const ProductList: React.FC = () => {
           value={limit}
           onChange={(e) => setLimit(Number(e.target.value))}
         >
-          {[10, 20, 50].map((l) => (
+          {[6, 12, 18, 24, 30, 36, 42, 48, 54].map((l) => (
             <option key={l} value={l}>
               {l}
             </option>
