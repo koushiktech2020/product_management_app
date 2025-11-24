@@ -7,9 +7,13 @@ import type {
 import { apiWrapper } from '../utils/apiWrapper';
 
 // Product API functions with centralized error handling
+
 export const productsAPI = {
   create: (url: string, data: ProductData) =>
     apiWrapper(() => http.post(url, data).then(res => res.data)),
+
+  bulk: (url: string, products: ProductData[]) =>
+    apiWrapper(() => http.post(url, { products }).then(res => res.data)),
 
   getAll: (url: string, queryParams?: ProductQueryParams) =>
     apiWrapper(() => http.get(url, { params: queryParams }).then(res => res.data)),
