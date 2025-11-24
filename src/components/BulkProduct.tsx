@@ -48,33 +48,103 @@ const initialProduct = {
 };
 
 const BulkProduct = () => {
+  const [products, setProducts] = useState<
+    Array<Omit<ProductData, "category">>
+  >([]);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [formValues, setFormValues] =
+    useState<Omit<ProductData, "category">>(initialProduct);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  const handleBulkSubmit = async (
-    values: BulkProductValues,
-    helpers: { resetForm: () => void }
+  const validationSchema = yup.object().shape({
+    name: yup
+      .string()
+      .min(2, "Product name must be at least 2 characters long")
+      .max(100, "Product name cannot exceed 100 characters")
+      .required("Product name is required"),
+    description: yup
+      .string()
+      .min(10, "Description must be at least 10 characters long")
+      .max(500, "Description cannot exceed 500 characters")
+      .required("Description is required"),
+    price: yup
+      .number()
+      .positive("Price must be a positive number")
+      .max(1000000, "Price cannot exceed ₹10,00,000")
+      .required("Price is required"),
+    quantity: yup
+      .number()
+      .integer("Quantity must be a whole number")
+      .min(1, "Quantity must be at least 1")
+      .max(10000, "Quantity cannot exceed 10,000")
+      .required("Quantity is required"),
+  });
+
+  const handleAddOrUpdate = (
+    values: Omit<ProductData, "category">,
+    { resetForm }: any
   ) => {
+    if (editingIndex !== null) {
+      // Update existing product
+      const updated = [...products];
+      updated[editingIndex] = values;
+      setProducts(updated);
+      setEditingIndex(null);
+    } else {
+      // Add new product
+      setProducts([...products, values]);
+    }
+    resetForm();
+    setFormValues(initialProduct);
+    setSuccess(false);
+    setError("");
+  };
+
+  const handleEdit = (idx: number) => {
+    setFormValues(products[idx]);
+    setEditingIndex(idx);
+    setSuccess(false);
+    setError("");
+  };
+
+  const handleDelete = (idx: number) => {
+    setProducts(products.filter((_, i) => i !== idx));
+    setSuccess(false);
+    setError("");
+    // If editing the deleted row, reset form
+    if (editingIndex === idx) {
+      setEditingIndex(null);
+      setFormValues(initialProduct);
+    }
+  };
+
+  const handleBulkSubmit = async () => {
+    if (products.length === 0) {
+      setError("Add at least one product before submitting.");
+      return;
+    }
     setLoading(true);
     setError("");
     setSuccess(false);
     try {
-      // Add default category for each product
-      const products: ProductData[] = values.products.map(
-        (p: Omit<ProductData, "category">) => ({ ...p, category: "General" })
-      );
+      const payload: ProductData[] = products.map((p) => ({
+        ...p,
+        category: "General",
+      }));
       const result = await productsAPI.bulk(
         PRODUCTS_ENDPOINTS.BASE + "/bulk",
-        products
+        payload
       );
       if (result.success) {
         setSuccess(true);
-        helpers.resetForm();
+        setProducts([]);
+        setFormValues(initialProduct);
+        setEditingIndex(null);
       } else {
         setError("Bulk add failed. Please try again.");
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       setError("Error occurred. Please try again.");
     } finally {
@@ -103,178 +173,210 @@ const BulkProduct = () => {
               aria-label="Close"
             ></button>
           </div>
-          <Formik
-            initialValues={{ products: [initialProduct] }}
-            validationSchema={bulkProductValidationSchema}
-            onSubmit={handleBulkSubmit}
-          >
-            {({ values, isSubmitting }) => (
-              <Form>
-                <div className="modal-body p-4">
-                  <FieldArray name="products">
-                    {({ push, remove }) => (
-                      <div className="d-flex flex-column gap-4">
-                        {values.products.map((_, idx) => (
-                          <div key={idx} className="card shadow-sm border-0">
-                            <div className="card-body">
-                              <div className="row g-3">
-                                <div className="col-12 mb-2">
-                                  <label className="form-label fw-semibold">
-                                    Product Name *
-                                  </label>
-                                  <Field
-                                    type="text"
-                                    name={`products[${idx}].name`}
-                                    className="form-control"
-                                    placeholder="Enter product name"
-                                  />
-                                  <ErrorMessage
-                                    name={`products[${idx}].name`}
-                                    component="div"
-                                    className="text-danger small"
-                                  />
-                                </div>
-                                <div className="col-12 mb-2">
-                                  <label className="form-label fw-semibold">
-                                    Description *
-                                  </label>
-                                  <Field
-                                    as="textarea"
-                                    name={`products[${idx}].description`}
-                                    className="form-control"
-                                    placeholder="Enter product description"
-                                    rows={2}
-                                  />
-                                  <ErrorMessage
-                                    name={`products[${idx}].description`}
-                                    component="div"
-                                    className="text-danger small"
-                                  />
-                                </div>
-                              </div>
-                              <div className="row g-3 mt-2">
-                                <div className="col-md-6">
-                                  <label className="form-label fw-semibold">
-                                    Price (₹) *
-                                  </label>
-                                  <Field
-                                    type="number"
-                                    name={`products[${idx}].price`}
-                                    className="form-control"
-                                    placeholder="0"
-                                    min="0"
-                                    step="0.01"
-                                  />
-                                  <ErrorMessage
-                                    name={`products[${idx}].price`}
-                                    component="div"
-                                    className="text-danger small"
-                                  />
-                                </div>
-                                <div className="col-md-6">
-                                  <label className="form-label fw-semibold">
-                                    Quantity *
-                                  </label>
-                                  <Field
-                                    type="number"
-                                    name={`products[${idx}].quantity`}
-                                    className="form-control"
-                                    placeholder="1"
-                                    min="1"
-                                  />
-                                  <ErrorMessage
-                                    name={`products[${idx}].quantity`}
-                                    component="div"
-                                    className="text-danger small"
-                                  />
-                                </div>
-                              </div>
-                              <div className="d-flex justify-content-end mt-3">
-                                {values.products.length > 1 && (
-                                  <button
-                                    type="button"
-                                    className="btn btn-outline-danger btn-sm rounded-pill"
-                                    onClick={() => remove(idx)}
-                                  >
-                                    <i
-                                      className="material-icons"
-                                      style={{ fontSize: "18px" }}
-                                    >
-                                      delete
-                                    </i>{" "}
-                                    Remove
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+          <div className="modal-body p-4">
+            <div className="card mb-4 shadow-sm border-0">
+              <div className="card-body">
+                <Formik
+                  initialValues={formValues}
+                  enableReinitialize
+                  validationSchema={validationSchema}
+                  onSubmit={handleAddOrUpdate}
+                >
+                  {({ isSubmitting, resetForm }) => (
+                    <Form>
+                      <div className="row g-3">
+                        <div className="col-12 mb-2">
+                          <label className="form-label fw-semibold">
+                            Product Name *
+                          </label>
+                          <Field
+                            type="text"
+                            name="name"
+                            className="form-control border border-secondary-subtle shadow-none"
+                            placeholder="Enter product name"
+                          />
+                          <ErrorMessage
+                            name="name"
+                            component="div"
+                            className="text-danger small"
+                          />
+                        </div>
+                        <div className="col-12 mb-2">
+                          <label className="form-label fw-semibold">
+                            Description *
+                          </label>
+                          <Field
+                            as="textarea"
+                            name="description"
+                            className="form-control border border-secondary-subtle shadow-none"
+                            placeholder="Enter product description"
+                            rows={2}
+                          />
+                          <ErrorMessage
+                            name="description"
+                            component="div"
+                            className="text-danger small"
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <label className="form-label fw-semibold">
+                            Price (₹) *
+                          </label>
+                          <Field
+                            type="number"
+                            name="price"
+                            className="form-control border border-secondary-subtle shadow-none"
+                            placeholder="0"
+                            min="0"
+                            step="0.01"
+                          />
+                          <ErrorMessage
+                            name="price"
+                            component="div"
+                            className="text-danger small"
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <label className="form-label fw-semibold">
+                            Quantity *
+                          </label>
+                          <Field
+                            type="number"
+                            name="quantity"
+                            className="form-control border border-secondary-subtle shadow-none"
+                            placeholder="1"
+                            min="1"
+                          />
+                          <ErrorMessage
+                            name="quantity"
+                            component="div"
+                            className="text-danger small"
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex justify-content-end mt-3">
                         <button
-                          type="button"
-                          className="btn btn-success rounded-pill fw-semibold align-self-start"
-                          onClick={() => push(initialProduct)}
+                          type="submit"
+                          className="btn btn-success rounded-pill fw-semibold d-flex align-items-center"
+                          disabled={isSubmitting || loading}
                         >
                           <i
-                            className="material-icons"
+                            className="material-icons me-1"
                             style={{ fontSize: "20px" }}
                           >
                             add_circle
-                          </i>{" "}
-                          Add Another Product
+                          </i>
+                          {editingIndex !== null
+                            ? "Update Product"
+                            : "Add Product"}
                         </button>
                       </div>
-                    )}
-                  </FieldArray>
-                  {error && (
-                    <div className="alert alert-danger mt-3">{error}</div>
+                    </Form>
                   )}
-                  {success && (
-                    <div className="alert alert-success mt-3">
-                      Products added successfully!
-                    </div>
-                  )}
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={isSubmitting || loading}
-                  >
-                    {isSubmitting || loading ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm"
-                          role="status"
-                        />{" "}
-                        Adding...
-                      </>
-                    ) : (
-                      <>
-                        <i
-                          className="material-icons"
-                          style={{ fontSize: "20px" }}
-                        >
-                          save
-                        </i>{" "}
-                        Add Products
-                      </>
-                    )}
-                  </button>
-                </div>
-              </Form>
+                </Formik>
+              </div>
+            </div>
+            {/* Table/List of products */}
+            {products.length > 0 && (
+              <div className="table-responsive mb-4">
+                <table className="table table-bordered align-middle">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Price (₹)</th>
+                      <th>Quantity</th>
+                      <th className="text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product, idx) => (
+                      <tr key={idx}>
+                        <td>{product.name}</td>
+                        <td>{product.description}</td>
+                        <td>{product.price}</td>
+                        <td>{product.quantity}</td>
+                        <td className="text-center">
+                          <div className="d-flex justify-content-center gap-2">
+                            <button
+                              type="button"
+                              className="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center"
+                              onClick={() => handleEdit(idx)}
+                            >
+                              <i
+                                className="material-icons me-1"
+                                style={{ fontSize: "18px" }}
+                              >
+                                edit
+                              </i>
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline-danger btn-sm rounded-pill d-flex align-items-center"
+                              onClick={() => handleDelete(idx)}
+                            >
+                              <i
+                                className="material-icons me-1"
+                                style={{ fontSize: "18px" }}
+                              >
+                                delete
+                              </i>
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
-          </Formik>
+            {error && <div className="alert alert-danger mt-3">{error}</div>}
+            {success && (
+              <div className="alert alert-success mt-3">
+                Products added successfully!
+              </div>
+            )}
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary d-flex align-items-center"
+              disabled={loading}
+              onClick={handleBulkSubmit}
+            >
+              {loading ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    role="status"
+                  />{" "}
+                  Adding...
+                </>
+              ) : (
+                <>
+                  <i
+                    className="material-icons me-1"
+                    style={{ fontSize: "20px" }}
+                  >
+                    save
+                  </i>
+                  Add Products
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
 export default BulkProduct;
