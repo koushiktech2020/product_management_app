@@ -4,15 +4,10 @@ import { PRODUCTS_ENDPOINTS } from "../services/endpoints/products";
 import type { Product } from "../types/api";
 import ProductForm from "../components/ProductForm";
 import ProductFilter from "../components/ProductFilter";
-// import Loading from "../components/Loading";
 import EmptyState from "../components/EmptyState";
+import BulkProduct from "../components/BulkProduct";
 
 const ProductList: React.FC = () => {
-  // Handler for bulk product modal
-  const handleOpenBulkModal = () => {
-    // TODO: Implement bulk product modal open logic
-    alert("Bulk product modal will open here.");
-  };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,10 +18,6 @@ const ProductList: React.FC = () => {
   const [sortBy, setSortBy] = useState<string>("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [totalPages, setTotalPages] = useState(1);
-
-  const handleEditProduct = (product: Product) => {
-    setProductId(product._id);
-  };
 
   const handleDeleteProduct = async (product: Product) => {
     if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
@@ -47,6 +38,10 @@ const ProductList: React.FC = () => {
         alert("An error occurred while deleting the product.");
       }
     }
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setProductId(product._id);
   };
 
   const handleAfterClose = () => {
@@ -119,7 +114,8 @@ const ProductList: React.FC = () => {
         <button
           className="btn btn-primary btn-lg d-flex align-items-center gap-2 px-3 py-2 shadow-sm rounded-pill fw-semibold transition-all"
           title="Bulk Add Products"
-          onClick={handleOpenBulkModal}
+          data-bs-toggle="modal"
+          data-bs-target="#bulkProductModal"
         >
           <i className="material-icons" style={{ fontSize: "22px" }}>
             layers
@@ -417,6 +413,9 @@ const ProductList: React.FC = () => {
         setProductId={setProductId}
         afterClose={handleAfterClose}
       />
+
+      <BulkProduct />
+
       <ProductFilter setProducts={setProducts} resetTrigger={resetTrigger} />
     </div>
   );
