@@ -8,6 +8,11 @@ import ProductFilter from "../components/ProductFilter";
 import EmptyState from "../components/EmptyState";
 
 const ProductList: React.FC = () => {
+  // Handler for bulk product modal
+  const handleOpenBulkModal = () => {
+    // TODO: Implement bulk product modal open logic
+    alert("Bulk product modal will open here.");
+  };
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,7 +92,9 @@ const ProductList: React.FC = () => {
   // Reusable page header component
   const PageHeader = () => (
     <div className="d-flex justify-content-between align-items-center mb-4 gap-2">
-      <h1>Product List</h1>
+      <div className="d-flex align-items-center gap-3">
+        <h1>Product List</h1>
+      </div>
       <div className="d-flex gap-2">
         <button
           className="btn btn-outline-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
@@ -108,6 +115,16 @@ const ProductList: React.FC = () => {
           <i className="material-icons" style={{ fontSize: "20px" }}>
             filter_alt
           </i>
+        </button>
+        <button
+          className="btn btn-primary btn-lg d-flex align-items-center gap-2 px-3 py-2 shadow-sm rounded-pill fw-semibold transition-all"
+          title="Bulk Add Products"
+          onClick={handleOpenBulkModal}
+        >
+          <i className="material-icons" style={{ fontSize: "22px" }}>
+            layers
+          </i>
+          <span className="d-none d-md-inline">Bulk Add</span>
         </button>
         <button
           className="btn btn-primary btn-lg d-flex align-items-center gap-2 px-4 py-2 shadow-sm rounded-pill fw-semibold transition-all"
