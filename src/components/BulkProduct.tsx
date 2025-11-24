@@ -118,7 +118,7 @@ const BulkProduct = () => {
                           <div key={idx} className="card shadow-sm border-0">
                             <div className="card-body">
                               <div className="row g-3">
-                                <div className="col-md-6">
+                                <div className="col-12 mb-2">
                                   <label className="form-label fw-semibold">
                                     Product Name *
                                   </label>
@@ -134,7 +134,7 @@ const BulkProduct = () => {
                                     className="text-danger small"
                                   />
                                 </div>
-                                <div className="col-md-6">
+                                <div className="col-12 mb-2">
                                   <label className="form-label fw-semibold">
                                     Description *
                                   </label>
